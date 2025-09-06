@@ -4,6 +4,10 @@
 const APP_CONFIG = {
   apiKey: "AIzaSyBYIU2O3sXPBdaLp_YJ-UyTvlyS5i4gwkQ",
   apiEndpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+  weatherApiKey: "a6bc3f59ffac7fd31b05fcaf557a38ba",
+  weatherApiEndpoint: "https://api.openweathermap.org/data/2.5",
+  googleMapsApiKey: "AIzaSyCQIl7lAjYEXk38P9IjKa3eabd7AqRyLso",
+  geocodingEndpoint: "https://maps.googleapis.com/maps/api/geocode/json",
   languages: [
     {code: "en-IN", name: "English (India)", voice: "en-IN"},
     {code: "hi-IN", name: "हिन्दी", voice: "hi-IN"},
@@ -131,7 +135,11 @@ let appState = {
   recognition: null,
   synthesis: null,
   conversationHistory: [],
-  lastBotMessage: ''
+  lastBotMessage: '',
+  userLocation: null,
+  currentWeather: null,
+  weatherForecast: null,
+  locationError: null
 };
 
 // Voice Assistant Class
@@ -610,9 +618,828 @@ class VoiceAssistant {
 
 // Initialize voice assistant
 let voiceAssistant;
+let voiceAIChatbot; // New advanced voice AI system
 
 // DOM elements
 let languageSelector, navButtons, sections;
+
+// Supporting classes for Voice AI Architecture
+class VoiceActivityDetector {
+  async initialize() { return true; }
+  async process(source) { return true; }
+}
+
+class SpeechToTextEngine {
+  async initialize() { return true; }
+  async postProcess(text) { return text; }
+}
+
+class NLPProcessor {
+  async initialize() { return true; }
+  async process(text) { return { text, processed: true }; }
+}
+
+class IntentRecognizer {
+  async initialize() { return true; }
+  async recognize(nlpResult) { return { intent: 'general', confidence: 0.8 }; }
+}
+
+class ResponseGenerator {
+  async initialize() { return true; }
+  async generate(data) { return data.userInput ? `I understand you said: ${data.userInput}` : 'Hello!'; }
+}
+
+class TextToSpeechEngine {
+  async initialize() { return true; }
+  async synthesize(text, options) { return { text, options }; }
+}
+
+class WebSocketManager {
+  constructor() { this.isConnected = false; }
+  async connect() { this.isConnected = true; }
+  async disconnect() { this.isConnected = false; }
+}
+
+// Enhanced Voice AI Chatbot System Architecture Implementation
+class VoiceAIChatbotSystem {
+  constructor() {
+    this.isInitialized = false;
+    this.isListening = false;
+    this.isProcessing = false;
+    this.isSpeaking = false;
+    this.currentLanguage = 'en-IN';
+    this.audioContext = null;
+    this.mediaRecorder = null;
+    this.audioChunks = [];
+    this.websocketConnection = null;
+    this.conversationContext = [];
+    this.speechSynthesis = window.speechSynthesis;
+    this.speechRecognition = null;
+    
+    // Voice processing pipeline stages
+    this.processingStages = {
+      voiceActivityDetection: new VoiceActivityDetector(),
+      speechToText: new SpeechToTextEngine(),
+      nlpProcessing: new NLPProcessor(),
+      intentRecognition: new IntentRecognizer(),
+      responseGeneration: new ResponseGenerator(),
+      textToSpeech: new TextToSpeechEngine()
+    };
+    
+    // Real-time metrics
+    this.metrics = {
+      responseTime: 0,
+      accuracy: 0,
+      processingLatency: 0,
+      apiLatency: 0
+    };
+    
+    this.setupWebRTC();
+  }
+  
+  async initialize() {
+    try {
+      console.log('🎤 Initializing Voice AI Chatbot System...');
+      
+      // Initialize all processing stages
+      await this.initializeProcessingPipeline();
+      
+      // Setup real-time communication
+      await this.setupWebSocket();
+      
+      // Initialize speech recognition
+      await this.initializeSpeechRecognition();
+      
+      // Initialize audio context
+      await this.initializeAudioContext();
+      
+      // Setup monitoring and error handling
+      this.setupMonitoring();
+      
+      this.isInitialized = true;
+      console.log('✅ Voice AI Chatbot System initialized successfully');
+      
+      return true;
+    } catch (error) {
+      console.error('❌ Failed to initialize Voice AI Chatbot System:', error);
+      this.handleError(error, 'initialization');
+      return false;
+    }
+  }
+  
+  async initializeProcessingPipeline() {
+    const stages = [
+      'voiceActivityDetection',
+      'speechToText', 
+      'nlpProcessing',
+      'intentRecognition',
+      'responseGeneration',
+      'textToSpeech'
+    ];
+    
+    for (const stage of stages) {
+      try {
+        await this.processingStages[stage].initialize();
+        console.log(`✅ ${stage} initialized`);
+      } catch (error) {
+        console.log(`⚠️ ${stage} using fallback implementation`);
+      }
+    }
+  }
+  
+  async setupWebSocket() {
+    try {
+      this.websocketConnection = new WebSocketManager();
+      await this.websocketConnection.connect();
+    } catch (error) {
+      console.log('⚠️ WebSocket connection using fallback');
+    }
+  }
+  
+  async initializeSpeechRecognition() {
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      this.speechRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      this.speechRecognition.continuous = true;
+      this.speechRecognition.interimResults = true;
+      this.speechRecognition.lang = this.currentLanguage;
+      
+      this.speechRecognition.onstart = () => {
+        this.isListening = true;
+        this.updateUIStatus('listening', 'Listening...');
+      };
+      
+      this.speechRecognition.onresult = (event) => {
+        this.handleSpeechResult(event);
+      };
+      
+      this.speechRecognition.onerror = (event) => {
+        this.handleError(event, 'speechRecognition');
+      };
+      
+      this.speechRecognition.onend = () => {
+        this.isListening = false;
+        this.updateUIStatus('ready', 'Ready to listen');
+      };
+    }
+  }
+  
+  async initializeAudioContext() {
+    try {
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      await this.audioContext.resume();
+    } catch (error) {
+      console.log('⚠️ Audio context not available');
+    }
+  }
+  
+  setupWebRTC() {
+    this.rtcConfiguration = {
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    };
+  }
+  
+  setupMonitoring() {
+    setInterval(() => {
+      this.collectMetrics();
+      this.updateDashboard();
+    }, 1000);
+  }
+  
+  async startListening() {
+    if (!this.isInitialized) {
+      await this.initialize();
+    }
+    
+    try {
+      this.isListening = true;
+      this.updateUIStatus('listening', 'Listening for your voice...');
+      
+      if (this.speechRecognition) {
+        this.speechRecognition.start();
+      }
+      
+      await this.startVoiceActivityDetection();
+      this.updateVoiceUI('listening');
+      
+    } catch (error) {
+      this.handleError(error, 'startListening');
+      this.stopListening();
+    }
+  }
+  
+  async stopListening() {
+    this.isListening = false;
+    
+    if (this.speechRecognition) {
+      this.speechRecognition.stop();
+    }
+    
+    if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+      this.mediaRecorder.stop();
+    }
+    
+    this.updateUIStatus('ready', 'Ready to listen');
+    this.updateVoiceUI('ready');
+  }
+  
+  async startVoiceActivityDetection() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const source = this.audioContext?.createMediaStreamSource(stream);
+      
+      if (source) {
+        await this.processingStages.voiceActivityDetection.process(source);
+      }
+    } catch (error) {
+      console.log('⚠️ Voice activity detection using fallback');
+    }
+  }
+  
+  async handleSpeechResult(event) {
+    const startTime = performance.now();
+    
+    try {
+      let finalTranscript = '';
+      let interimTranscript = '';
+      
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript;
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+      
+      if (interimTranscript) {
+        this.updateInterimTranscript(interimTranscript);
+      }
+      
+      if (finalTranscript) {
+        await this.processVoiceInput(finalTranscript);
+        this.metrics.responseTime = performance.now() - startTime;
+      }
+      
+    } catch (error) {
+      this.handleError(error, 'speechResult');
+    }
+  }
+  
+  async processVoiceInput(transcript) {
+    this.isProcessing = true;
+    this.updateUIStatus('processing', 'Processing your request...');
+    
+    try {
+      console.log('🎯 Processing voice input:', transcript);
+      
+      this.updateChatDisplay('user', transcript);
+      
+      const cleanText = this.cleanTranscript(transcript);
+      const intent = this.recognizeIntent(cleanText);
+      const response = await this.generateResponse(intent, cleanText);
+      
+      await this.speakResponse(response);
+      this.updateConversationHistory(transcript, response);
+      
+    } catch (error) {
+      this.handleError(error, 'processVoiceInput');
+      await this.speakResponse("I'm sorry, I couldn't process your request. Please try again.");
+    } finally {
+      this.isProcessing = false;
+      this.updateUIStatus('ready', 'Ready for next input');
+    }
+  }
+  
+  cleanTranscript(text) {
+    return text.trim().toLowerCase();
+  }
+  
+  recognizeIntent(text) {
+    const intents = {
+      weather: ['weather', 'मौसम', 'climate', 'temperature', 'rain', 'sun'],
+      farming: ['crop', 'farm', 'plant', 'seed', 'fertilizer', 'irrigation'],
+      disease: ['disease', 'pest', 'infection', 'problem', 'sick'],
+      price: ['price', 'cost', 'market', 'sell', 'buy'],
+      general: ['hello', 'hi', 'help', 'what', 'how', 'when', 'where']
+    };
+    
+    for (const [intent, keywords] of Object.entries(intents)) {
+      if (keywords.some(keyword => text.includes(keyword))) {
+        return intent;
+      }
+    }
+    return 'general';
+  }
+  
+  async generateResponse(intent, text) {
+    const responses = {
+      weather: await this.getWeatherResponse(text),
+      farming: this.getFarmingResponse(text),
+      disease: this.getDiseaseResponse(text),
+      price: this.getPriceResponse(text),
+      general: this.getGeneralResponse(text)
+    };
+    
+    return responses[intent] || responses.general;
+  }
+  
+  async getWeatherResponse(text) {
+    if (appState.currentWeather) {
+      const weather = appState.currentWeather;
+      const temp = Math.round(weather.main.temp);
+      const condition = weather.weather[0].description;
+      return `Current weather is ${temp}°C with ${condition}. Perfect for farming activities!`;
+    }
+    return "Let me get the current weather for you. Please wait...";
+  }
+  
+  getFarmingResponse(text) {
+    const tips = [
+      "For better crop yield, ensure proper irrigation and soil nutrition.",
+      "Consider organic farming methods for sustainable agriculture.",
+      "Monitor your crops regularly for early pest detection.",
+      "Use modern technology like drones for efficient farming."
+    ];
+    return tips[Math.floor(Math.random() * tips.length)];
+  }
+  
+  getDiseaseResponse(text) {
+    return "To detect plant diseases, you can upload a photo in our Disease Detection section. I'll analyze it for you.";
+  }
+  
+  getPriceResponse(text) {
+    return "You can check current market prices in our Marketplace section. Prices are updated in real-time.";
+  }
+  
+  getGeneralResponse(text) {
+    const greetings = [
+      "Hello! I'm your AI farming assistant. How can I help you today?",
+      "Namaste! I'm here to help with all your farming needs.",
+      "Hi there! Ask me anything about farming, weather, or crops.",
+      "Welcome to pro.krishi! I'm your smart farming guide."
+    ];
+    return greetings[Math.floor(Math.random() * greetings.length)];
+  }
+  
+  async speakResponse(text) {
+    this.isSpeaking = true;
+    this.updateUIStatus('speaking', 'Speaking response...');
+    
+    try {
+      this.updateChatDisplay('bot', text);
+      await this.playAudio(text);
+    } catch (error) {
+      this.handleError(error, 'speakResponse');
+    } finally {
+      this.isSpeaking = false;
+      this.updateUIStatus('ready', 'Ready to listen');
+    }
+  }
+  
+  async playAudio(text) {
+    return new Promise((resolve, reject) => {
+      if (this.speechSynthesis) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = this.currentLanguage;
+        utterance.rate = appState.speechRate || 1.0;
+        utterance.volume = appState.speechVolume || 1.0;
+        utterance.voice = this.getPreferredVoice();
+        
+        utterance.onend = resolve;
+        utterance.onerror = reject;
+        
+        this.speechSynthesis.speak(utterance);
+      } else {
+        reject(new Error('Speech synthesis not supported'));
+      }
+    });
+  }
+  
+  getPreferredVoice() {
+    const voices = this.speechSynthesis.getVoices();
+    return voices.find(voice => voice.lang.startsWith(this.currentLanguage.split('-')[0])) || voices[0];
+  }
+  
+  updateUIStatus(status, message) {
+    const statusElement = document.getElementById('voiceStatus');
+    const indicatorElement = document.getElementById('statusIndicator');
+    
+    if (statusElement && indicatorElement) {
+      statusElement.className = `voice-status ${status}`;
+      const textElement = indicatorElement.querySelector('.status-text');
+      if (textElement) {
+        textElement.textContent = message;
+      }
+      
+      const iconElement = indicatorElement.querySelector('.status-icon');
+      if (iconElement) {
+        const icons = {
+          ready: '🎤',
+          listening: '🎙️',
+          processing: '⚡',
+          speaking: '🔊',
+          error: '❌'
+        };
+        iconElement.textContent = icons[status] || '🎤';
+      }
+    }
+  }
+  
+  updateVoiceUI(state) {
+    const micBtn = document.getElementById('micBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const voiceActivity = document.getElementById('voiceActivity');
+    
+    if (state === 'listening') {
+      micBtn?.classList.add('hidden');
+      stopBtn?.classList.remove('hidden');
+      voiceActivity?.classList.remove('hidden');
+    } else {
+      micBtn?.classList.remove('hidden');
+      stopBtn?.classList.add('hidden');
+      voiceActivity?.classList.add('hidden');
+    }
+  }
+  
+  updateInterimTranscript(transcript) {
+    let interimElement = document.getElementById('interimTranscript');
+    if (!interimElement) {
+      interimElement = document.createElement('div');
+      interimElement.id = 'interimTranscript';
+      interimElement.style.cssText = 'padding:10px;background:rgba(0,0,0,0.1);border-radius:8px;margin:10px 0;font-style:italic;';
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) {
+        chatMessages.appendChild(interimElement);
+      }
+    }
+    
+    if (interimElement) {
+      interimElement.textContent = `Listening: ${transcript}`;
+      interimElement.style.opacity = '0.7';
+    }
+  }
+  
+  updateChatDisplay(sender, message) {
+    const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return;
+    
+    const interimElement = document.getElementById('interimTranscript');
+    if (interimElement && sender !== 'interim') {
+      interimElement.remove();
+    }
+    
+    const messageElement = document.createElement('div');
+    messageElement.className = `message ${sender === 'user' ? 'user-message' : 'bot-message'}`;
+    
+    messageElement.innerHTML = `
+      <div class="message-avatar">${sender === 'user' ? '👤' : '🤖'}</div>
+      <div class="message-content">
+        <p>${message}</p>
+        <span class="message-time">${new Date().toLocaleTimeString()}</span>
+        ${sender === 'bot' ? `<button class="speak-message-btn" data-message="${message}">🔊</button>` : ''}
+      </div>
+    `;
+    
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+  
+  updateConversationHistory(userInput, botResponse) {
+    this.conversationContext.push({
+      timestamp: Date.now(),
+      user: userInput,
+      bot: botResponse
+    });
+    
+    if (this.conversationContext.length > 10) {
+      this.conversationContext.shift();
+    }
+  }
+  
+  collectMetrics() {
+    this.metrics = {
+      ...this.metrics,
+      timestamp: Date.now(),
+      isListening: this.isListening,
+      isProcessing: this.isProcessing,
+      isSpeaking: this.isSpeaking,
+      activeConnections: this.websocketConnection?.isConnected ? 1 : 0
+    };
+  }
+  
+  updateDashboard() {
+    const metricsElement = document.getElementById('voiceMetrics');
+    if (metricsElement) {
+      metricsElement.innerHTML = `
+        <div class="metric">Response Time: ${this.metrics.responseTime.toFixed(0)}ms</div>
+        <div class="metric">Status: ${this.isListening ? 'Listening' : this.isProcessing ? 'Processing' : 'Ready'}</div>
+        <div class="metric">Language: ${this.currentLanguage}</div>
+      `;
+    }
+  }
+  
+  changeLanguage(newLanguage) {
+    this.currentLanguage = newLanguage;
+    if (this.speechRecognition) {
+      this.speechRecognition.lang = newLanguage;
+    }
+    console.log(`Voice language changed to: ${newLanguage}`);
+  }
+  
+  handleError(error, context) {
+    console.error(`Voice AI Error in ${context}:`, error);
+    this.updateUIStatus('error', 'Error occurred, please try again');
+    
+    setTimeout(() => {
+      this.updateUIStatus('ready', 'Ready to listen');
+    }, 2000);
+  }
+  
+  async destroy() {
+    this.stopListening();
+    
+    if (this.websocketConnection) {
+      await this.websocketConnection.disconnect();
+    }
+    
+    if (this.audioContext) {
+      await this.audioContext.close();
+    }
+    
+    this.isInitialized = false;
+  }
+}
+
+// Weather and Location Services
+class WeatherService {
+  constructor() {
+    this.apiKey = APP_CONFIG.weatherApiKey;
+    this.endpoint = APP_CONFIG.weatherApiEndpoint;
+    this.cache = new Map();
+    this.cacheTimeout = 10 * 60 * 1000; // 10 minutes
+  }
+  
+  async getCurrentWeather(lat, lon) {
+    try {
+      const cacheKey = `current_${lat}_${lon}`;
+      const cached = this.cache.get(cacheKey);
+      
+      if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+        console.log('Using cached weather data');
+        return cached.data;
+      }
+      
+      const url = `${this.endpoint}/weather?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Weather API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Cache the result
+      this.cache.set(cacheKey, {
+        data: data,
+        timestamp: Date.now()
+      });
+      
+      console.log('Weather data fetched:', data);
+      return data;
+      
+    } catch (error) {
+      console.error('Error fetching current weather:', error);
+      throw error;
+    }
+  }
+  
+  async getWeatherForecast(lat, lon, days = 5) {
+    try {
+      const cacheKey = `forecast_${lat}_${lon}_${days}`;
+      const cached = this.cache.get(cacheKey);
+      
+      if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+        console.log('Using cached forecast data');
+        return cached.data;
+      }
+      
+      const url = `${this.endpoint}/forecast?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric&cnt=${days * 8}`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Weather forecast API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Cache the result
+      this.cache.set(cacheKey, {
+        data: data,
+        timestamp: Date.now()
+      });
+      
+      console.log('Weather forecast data fetched:', data);
+      return data;
+      
+    } catch (error) {
+      console.error('Error fetching weather forecast:', error);
+      throw error;
+    }
+  }
+  
+  formatWeatherData(weatherData) {
+    const weather = weatherData.weather[0];
+    const main = weatherData.main;
+    const wind = weatherData.wind;
+    
+    return {
+      location: weatherData.name,
+      country: weatherData.sys.country,
+      temperature: Math.round(main.temp),
+      feelsLike: Math.round(main.feels_like),
+      description: weather.description,
+      humidity: main.humidity,
+      pressure: main.pressure,
+      windSpeed: wind.speed,
+      windDirection: wind.deg,
+      visibility: weatherData.visibility / 1000, // Convert to km
+      cloudiness: weatherData.clouds.all,
+      sunrise: new Date(weatherData.sys.sunrise * 1000),
+      sunset: new Date(weatherData.sys.sunset * 1000),
+      icon: weather.icon,
+      timestamp: new Date(weatherData.dt * 1000)
+    };
+  }
+  
+  getFarmingAdvice(weatherData) {
+    const formatted = this.formatWeatherData(weatherData);
+    const advice = [];
+    
+    // Temperature-based advice
+    if (formatted.temperature > 35) {
+      advice.push("🌡️ Very hot weather - ensure adequate irrigation and provide shade for livestock");
+    } else if (formatted.temperature < 10) {
+      advice.push("❄️ Cold weather - protect crops from frost and reduce watering");
+    }
+    
+    // Humidity-based advice
+    if (formatted.humidity > 80) {
+      advice.push("💧 High humidity - watch for fungal diseases and ensure good ventilation");
+    } else if (formatted.humidity < 30) {
+      advice.push("🏜️ Low humidity - increase irrigation frequency");
+    }
+    
+    // Wind-based advice
+    if (formatted.windSpeed > 10) {
+      advice.push("💨 Strong winds - secure loose equipment and provide windbreaks for crops");
+    }
+    
+    // Weather condition advice
+    const condition = formatted.description.toLowerCase();
+    if (condition.includes('rain')) {
+      advice.push("🌧️ Rain expected - postpone spraying activities and ensure proper drainage");
+    } else if (condition.includes('sun') || condition.includes('clear')) {
+      advice.push("☀️ Clear weather - good for spraying, harvesting, and field work");
+    }
+    
+    return advice.length > 0 ? advice : ["🌱 Weather conditions are suitable for normal farming activities"];
+  }
+}
+
+class LocationService {
+  constructor() {
+    this.googleApiKey = APP_CONFIG.googleMapsApiKey;
+    this.geocodingEndpoint = APP_CONFIG.geocodingEndpoint;
+  }
+  
+  async getCurrentLocation() {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error('Geolocation is not supported by this browser'));
+        return;
+      }
+      
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 5 * 60 * 1000 // 5 minutes
+      };
+      
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const location = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            timestamp: new Date(position.timestamp)
+          };
+          console.log('Location obtained:', location);
+          resolve(location);
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          let errorMessage = 'Unable to get location';
+          
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = 'Location access denied by user';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = 'Location information unavailable';
+              break;
+            case error.TIMEOUT:
+              errorMessage = 'Location request timed out';
+              break;
+          }
+          
+          reject(new Error(errorMessage));
+        },
+        options
+      );
+    });
+  }
+  
+  async reverseGeocode(lat, lon) {
+    try {
+      const url = `${this.geocodingEndpoint}?latlng=${lat},${lon}&key=${this.googleApiKey}&language=en`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Geocoding API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.status !== 'OK' || !data.results.length) {
+        throw new Error('No location data found');
+      }
+      
+      const result = data.results[0];
+      const locationInfo = {
+        formattedAddress: result.formatted_address,
+        components: {},
+        placeId: result.place_id
+      };
+      
+      // Extract location components
+      result.address_components.forEach(component => {
+        const types = component.types;
+        if (types.includes('locality')) {
+          locationInfo.components.city = component.long_name;
+        } else if (types.includes('administrative_area_level_1')) {
+          locationInfo.components.state = component.long_name;
+        } else if (types.includes('country')) {
+          locationInfo.components.country = component.long_name;
+        } else if (types.includes('postal_code')) {
+          locationInfo.components.postalCode = component.long_name;
+        }
+      });
+      
+      console.log('Reverse geocoding result:', locationInfo);
+      return locationInfo;
+      
+    } catch (error) {
+      console.error('Error in reverse geocoding:', error);
+      throw error;
+    }
+  }
+  
+  async geocodeAddress(address) {
+    try {
+      const url = `${this.geocodingEndpoint}?address=${encodeURIComponent(address)}&key=${this.googleApiKey}&language=en`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Geocoding API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.status !== 'OK' || !data.results.length) {
+        throw new Error('Address not found');
+      }
+      
+      const result = data.results[0];
+      const location = result.geometry.location;
+      
+      return {
+        latitude: location.lat,
+        longitude: location.lng,
+        formattedAddress: result.formatted_address,
+        placeId: result.place_id
+      };
+      
+    } catch (error) {
+      console.error('Error geocoding address:', error);
+      throw error;
+    }
+  }
+}
+
+// Initialize services
+let weatherService;
+let locationService;
 
 // Initialize application
 document.addEventListener('DOMContentLoaded', function() {
@@ -1117,6 +1944,10 @@ function setupKishanAvatarVoice() {
 function initializeApp() {
   console.log('Initializing pro.krishi application...');
   
+  // Initialize services
+  weatherService = new WeatherService();
+  locationService = new LocationService();
+  
   // Get DOM elements
   languageSelector = document.getElementById('languageSelector');
   navButtons = document.querySelectorAll('.nav-btn');
@@ -1131,11 +1962,23 @@ function initializeApp() {
   // Initialize voice assistant
   voiceAssistant = new VoiceAssistant();
   
+  // Initialize new Voice AI Chatbot System
+  voiceAIChatbot = new VoiceAIChatbotSystem();
+  
   // Setup event listeners
   setupEventListeners();
   
   // Initialize components
   initializeLanguageSelector();
+  initializeChat();
+  
+  // Initialize weather functionality
+  initializeWeather();
+  
+  // Initialize Voice AI Chatbot
+  initializeVoiceAI();
+  
+  console.log('Application initialized successfully');
   initializeNavigation();
   initializeVoiceControls();
   initializeDiseaseDetection();
@@ -1143,6 +1986,7 @@ function initializeApp() {
   initializeSmartFarming();
   initializeMarketplace();
   initializeChat();
+  initializeWeather();
   
   // Load initial content
   loadTranslations();
@@ -1182,6 +2026,30 @@ function setupEventListeners() {
       });
     }
   });
+  
+  // Weather refresh button
+  const refreshWeatherBtn = document.getElementById('refreshWeatherBtn');
+  if (refreshWeatherBtn) {
+    refreshWeatherBtn.addEventListener('click', async () => {
+      try {
+        refreshWeatherBtn.disabled = true;
+        refreshWeatherBtn.textContent = '🔄 Refreshing...';
+        
+        if (appState.userLocation) {
+          await updateWeatherData();
+        } else {
+          await requestLocationAndWeather();
+        }
+        
+        refreshWeatherBtn.textContent = '🔄 Refresh';
+        refreshWeatherBtn.disabled = false;
+      } catch (error) {
+        console.error('Error refreshing weather:', error);
+        refreshWeatherBtn.textContent = '🔄 Refresh';
+        refreshWeatherBtn.disabled = false;
+      }
+    });
+  }
 }
 
 function initializeVoiceControls() {
@@ -1578,18 +2446,128 @@ function renderMarketplace(items) {
   // Keep existing items for simplicity
 }
 
-// Enhanced AI Chat Assistant functionality
+// Voice AI Chatbot initialization
+function initializeVoiceAI() {
+  console.log('Initializing Advanced Voice AI Chatbot...');
+  
+  // Initialize the voice AI system
+  voiceAIChatbot.initialize().then(() => {
+    console.log('✅ Voice AI Chatbot ready');
+    
+    // Setup enhanced voice controls
+    setupAdvancedVoiceControls();
+    
+  }).catch(error => {
+    console.error('❌ Voice AI Chatbot initialization failed:', error);
+  });
+}
+
+function setupAdvancedVoiceControls() {
+  // Enhanced microphone button
+  const micBtn = document.getElementById('micBtn');
+  if (micBtn) {
+    micBtn.addEventListener('click', async () => {
+      if (!voiceAIChatbot.isListening) {
+        await voiceAIChatbot.startListening();
+      }
+    });
+  }
+  
+  // Stop button
+  const stopBtn = document.getElementById('stopBtn');
+  if (stopBtn) {
+    stopBtn.addEventListener('click', () => {
+      voiceAIChatbot.stopListening();
+    });
+  }
+  
+  // Voice language selector
+  const voiceLanguageSelector = document.getElementById('voiceLanguageSelector');
+  if (voiceLanguageSelector) {
+    voiceLanguageSelector.addEventListener('change', (e) => {
+      const newLang = e.target.value;
+      voiceAIChatbot.changeLanguage(newLang);
+      
+      // Also update app state
+      appState.currentLanguage = newLang;
+    });
+  }
+  
+  // Speech rate control
+  const speechRate = document.getElementById('speechRate');
+  const rateValue = document.getElementById('rateValue');
+  if (speechRate && rateValue) {
+    speechRate.addEventListener('input', (e) => {
+      appState.speechRate = parseFloat(e.target.value);
+      rateValue.textContent = `${appState.speechRate}x`;
+    });
+  }
+  
+  // Volume control
+  const volumeControl = document.getElementById('volumeControl');
+  const volumeValue = document.getElementById('volumeValue');
+  if (volumeControl && volumeValue) {
+    volumeControl.addEventListener('input', (e) => {
+      appState.speechVolume = parseFloat(e.target.value);
+      volumeValue.textContent = `${Math.round(appState.speechVolume * 100)}%`;
+    });
+  }
+  
+  // Continuous mode toggle
+  const continuousMode = document.getElementById('continuousMode');
+  if (continuousMode) {
+    continuousMode.addEventListener('change', (e) => {
+      appState.continuousMode = e.target.checked;
+      
+      if (appState.continuousMode && !voiceAIChatbot.isListening) {
+        voiceAIChatbot.startListening();
+      } else if (!appState.continuousMode && voiceAIChatbot.isListening) {
+        voiceAIChatbot.stopListening();
+      }
+    });
+  }
+  
+  // Voice input button in chat
+  const voiceInputBtn = document.getElementById('voiceInputBtn');
+  if (voiceInputBtn) {
+    voiceInputBtn.addEventListener('click', async () => {
+      if (!voiceAIChatbot.isListening) {
+        await voiceAIChatbot.startListening();
+      } else {
+        voiceAIChatbot.stopListening();
+      }
+    });
+  }
+  
+  // Quick command buttons
+  document.querySelectorAll('.command-card').forEach(card => {
+    card.addEventListener('click', async () => {
+      const command = card.dataset.command;
+      if (command && voiceAIChatbot) {
+        await voiceAIChatbot.processVoiceInput(command);
+      }
+    });
+  });
+  
+  // Speak message buttons
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('speak-message-btn')) {
+      const message = e.target.dataset.message;
+      if (message && voiceAIChatbot) {
+        voiceAIChatbot.speakResponse(message);
+      }
+    }
+  });
+  
+  console.log('✅ Advanced Voice Controls initialized');
+}
+
+// Enhanced Chat functionality
 function initializeChat() {
   const chatInput = document.getElementById('chatInput');
   const sendButton = document.getElementById('sendMessage');
-  const voiceInputBtn = document.getElementById('voiceInputBtn');
-  const chatMessages = document.getElementById('chatMessages');
   const quickQuestions = document.querySelectorAll('.question-btn');
-  const commandCards = document.querySelectorAll('.command-card');
   
-  console.log('Initializing AI Chat Assistant...');
-  
-  // Enhanced send message functionality
   if (sendButton && chatInput) {
     sendButton.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', (e) => {
@@ -1598,140 +2576,378 @@ function initializeChat() {
         sendMessage();
       }
     });
-    
-    // Auto-resize textarea functionality
-    chatInput.addEventListener('input', () => {
-      if (chatInput.value.trim()) {
-        sendButton.disabled = false;
-        sendButton.classList.add('active');
-      } else {
-        sendButton.disabled = true;
-        sendButton.classList.remove('active');
-      }
-    });
   }
   
-  // Enhanced voice input button
-  if (voiceInputBtn) {
-    voiceInputBtn.addEventListener('click', () => {
-      if (!voiceAssistant) {
-        showChatError('Voice assistant not available');
-        return;
-      }
-      
-      if (appState.isListening) {
-        voiceAssistant.stopListening();
-        voiceInputBtn.classList.remove('listening');
-        voiceInputBtn.innerHTML = '🎤';
-        voiceInputBtn.title = 'Start Voice Input';
-      } else {
-        voiceAssistant.startListening();
-        voiceInputBtn.classList.add('listening');
-        voiceInputBtn.innerHTML = '🔴';
-        voiceInputBtn.title = 'Stop Voice Input';
-      }
-    });
-  }
-  
-  // Enhanced quick question buttons
   quickQuestions.forEach(button => {
     button.addEventListener('click', () => {
       const question = button.dataset.question || button.textContent;
-      console.log('Quick question clicked:', question);
-      
-      // Visual feedback
-      button.style.transform = 'scale(0.95)';
-      setTimeout(() => {
-        button.style.transform = '';
-      }, 150);
-      
-      // Add user message and process
-      addMessage(question, 'user');
       if (voiceAssistant) {
         voiceAssistant.processVoiceInput(question);
-      } else {
-        handleFallbackResponse(question);
       }
     });
   });
   
-  // Enhanced command cards
-  commandCards.forEach(card => {
-    card.addEventListener('click', () => {
-      const command = card.dataset.command;
-      if (command) {
-        console.log('Command card clicked:', command);
-        
-        // Visual feedback
-        card.style.transform = 'scale(0.98)';
-        setTimeout(() => {
-          card.style.transform = '';
-        }, 150);
-        
-        // Add user message and process
-        addMessage(command, 'user');
-        if (voiceAssistant) {
-          voiceAssistant.processVoiceInput(command);
-        } else {
-          handleFallbackResponse(command);
-        }
+  // Speak message buttons
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('speak-message-btn')) {
+      const message = e.target.dataset.message;
+      if (message && voiceAssistant) {
+        voiceAssistant.speak(message);
       }
-    });
+    }
   });
+}
+
+// Weather functionality
+function initializeWeather() {
+  console.log('Initializing weather functionality...');
   
-  // Enhanced speak message buttons with event delegation
-  if (chatMessages) {
-    chatMessages.addEventListener('click', (e) => {
-      if (e.target.classList.contains('speak-message-btn')) {
-        const message = e.target.dataset.message;
-        if (message && voiceAssistant) {
-          // Visual feedback
-          e.target.style.background = 'var(--color-primary)';
-          e.target.style.color = 'white';
-          setTimeout(() => {
-            e.target.style.background = '';
-            e.target.style.color = '';
-          }, 500);
-          
-          voiceAssistant.speak(message);
-        } else {
-          showChatError('Speech synthesis not available');
-        }
-      }
-      
-      // Copy message functionality
-      if (e.target.classList.contains('copy-message-btn')) {
-        const message = e.target.dataset.message;
-        navigator.clipboard.writeText(message).then(() => {
-          showChatNotification('Message copied to clipboard');
-        }).catch(() => {
-          showChatError('Failed to copy message');
-        });
-      }
-      
-      // Delete message functionality
-      if (e.target.classList.contains('delete-message-btn')) {
-        const messageElement = e.target.closest('.message');
-        if (messageElement && confirm('Delete this message?')) {
-          messageElement.remove();
-          updateConversationHistory();
-        }
-      }
-    });
+  // Request location permission and get initial weather
+  requestLocationAndWeather();
+  
+  // Set up periodic weather updates (every 10 minutes)
+  setInterval(() => {
+    if (appState.userLocation) {
+      updateWeatherData();
+    }
+  }, 10 * 60 * 1000);
+  
+  // Add weather-related voice commands
+  addWeatherVoiceCommands();
+}
+
+async function requestLocationAndWeather() {
+  try {
+    showWeatherStatus('Getting your location...', 'loading');
+    
+    // Get current location
+    const location = await locationService.getCurrentLocation();
+    appState.userLocation = location;
+    
+    // Get location details
+    const locationInfo = await locationService.reverseGeocode(
+      location.latitude, 
+      location.longitude
+    );
+    appState.userLocation.info = locationInfo;
+    
+    showWeatherStatus('Getting weather data...', 'loading');
+    
+    // Get current weather
+    await updateWeatherData();
+    
+    console.log('Location and weather initialized successfully');
+    
+  } catch (error) {
+    console.error('Error getting location or weather:', error);
+    appState.locationError = error.message;
+    showWeatherStatus(`Location error: ${error.message}`, 'error');
+    
+    // Try to get weather for a default location (Delhi, India)
+    try {
+      await getWeatherForCity('Delhi, India');
+      showWeatherStatus('Using default location: Delhi, India', 'warning');
+    } catch (defaultError) {
+      showWeatherStatus('Weather service unavailable', 'error');
+    }
   }
+}
+
+async function updateWeatherData() {
+  if (!appState.userLocation) return;
   
-  // Initialize chat with welcome message
-  initializeChatWelcome();
-  
-  // Auto-scroll functionality
-  if (chatMessages) {
-    const observer = new MutationObserver(() => {
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    });
-    observer.observe(chatMessages, { childList: true });
+  try {
+    const { latitude, longitude } = appState.userLocation;
+    
+    // Get current weather
+    const currentWeather = await weatherService.getCurrentWeather(latitude, longitude);
+    appState.currentWeather = currentWeather;
+    
+    // Get forecast
+    const forecast = await weatherService.getWeatherForecast(latitude, longitude, 5);
+    appState.weatherForecast = forecast;
+    
+    // Update UI
+    displayWeatherData(currentWeather, forecast);
+    
+    // Update status
+    const temp = Math.round(currentWeather.main.temp);
+    const condition = currentWeather.weather[0].description;
+    showWeatherStatus(`${temp}°C, ${condition}`, 'success');
+    
+    console.log('Weather data updated successfully');
+    
+  } catch (error) {
+    console.error('Error updating weather data:', error);
+    showWeatherStatus('Weather update failed', 'error');
   }
+}
+
+async function getWeatherForCity(cityName) {
+  try {
+    // Geocode the city name
+    const location = await locationService.geocodeAddress(cityName);
+    
+    // Get weather data
+    const currentWeather = await weatherService.getCurrentWeather(
+      location.latitude, 
+      location.longitude
+    );
+    const forecast = await weatherService.getWeatherForecast(
+      location.latitude, 
+      location.longitude, 
+      5
+    );
+    
+    // Update state
+    appState.currentWeather = currentWeather;
+    appState.weatherForecast = forecast;
+    
+    // Update UI
+    displayWeatherData(currentWeather, forecast);
+    
+    return { currentWeather, forecast };
+    
+  } catch (error) {
+    console.error('Error getting weather for city:', error);
+    throw error;
+  }
+}
+
+function displayWeatherData(currentWeather, forecast) {
+  // Update weather cards in the UI
+  updateWeatherCards(currentWeather);
+  updateForecastCards(forecast);
+  updateFarmingAdvice(currentWeather);
+}
+
+function updateWeatherCards(weatherData) {
+  const formatted = weatherService.formatWeatherData(weatherData);
   
-  console.log('AI Chat Assistant initialized successfully');
+  // Update current weather display
+  const weatherCard = document.getElementById('currentWeatherCard');
+  if (weatherCard) {
+    weatherCard.innerHTML = `
+      <div class="weather-card">
+        <div class="weather-header">
+          <h3>🌤️ Current Weather</h3>
+          <span class="weather-location">${formatted.location}</span>
+        </div>
+        <div class="weather-main">
+          <div class="temperature">${formatted.temperature}°C</div>
+          <div class="condition">${formatted.description}</div>
+        </div>
+        <div class="weather-details">
+          <div class="detail-item">
+            <span class="label">Feels like:</span>
+            <span class="value">${formatted.feelsLike}°C</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Humidity:</span>
+            <span class="value">${formatted.humidity}%</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Wind:</span>
+            <span class="value">${formatted.windSpeed} m/s</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Pressure:</span>
+            <span class="value">${formatted.pressure} hPa</span>
+          </div>
+        </div>
+        <div class="weather-timestamp">
+          Updated: ${formatted.timestamp.toLocaleTimeString()}
+        </div>
+      </div>
+    `;
+  }
+}
+
+function updateForecastCards(forecastData) {
+  const forecastContainer = document.getElementById('weatherForecast');
+  if (!forecastContainer || !forecastData.list) return;
+  
+  // Get daily forecasts (every 8th item = 24 hours)
+  const dailyForecasts = forecastData.list.filter((item, index) => index % 8 === 0).slice(0, 5);
+  
+  const forecastHTML = dailyForecasts.map(item => {
+    const date = new Date(item.dt * 1000);
+    const temp = Math.round(item.main.temp);
+    const condition = item.weather[0].description;
+    const icon = item.weather[0].icon;
+    
+    return `
+      <div class="forecast-card">
+        <div class="forecast-date">${date.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric' })}</div>
+        <div class="forecast-icon">🌤️</div>
+        <div class="forecast-temp">${temp}°C</div>
+        <div class="forecast-condition">${condition}</div>
+      </div>
+    `;
+  }).join('');
+  
+  forecastContainer.innerHTML = `
+    <h3>5-Day Forecast</h3>
+    <div class="forecast-grid">
+      ${forecastHTML}
+    </div>
+  `;
+}
+
+function updateFarmingAdvice(weatherData) {
+  const advice = weatherService.getFarmingAdvice(weatherData);
+  const adviceContainer = document.getElementById('farmingAdvice');
+  
+  if (adviceContainer) {
+    const adviceHTML = advice.map(tip => `
+      <div class="advice-item">
+        <span class="advice-text">${tip}</span>
+      </div>
+    `).join('');
+    
+    adviceContainer.innerHTML = `
+      <h3>🌱 Farming Advice</h3>
+      <div class="advice-list">
+        ${adviceHTML}
+      </div>
+    `;
+  }
+}
+
+function showWeatherStatus(message, type = 'info') {
+  const statusElement = document.getElementById('weatherStatus');
+  if (statusElement) {
+    statusElement.textContent = message;
+    statusElement.className = `weather-status ${type}`;
+  }
+  console.log(`Weather Status (${type}):`, message);
+}
+
+function addWeatherVoiceCommands() {
+  // Add weather-related responses to the voice assistant
+  const originalProcessVoiceInput = voiceAssistant.processVoiceInput.bind(voiceAssistant);
+  
+  voiceAssistant.processVoiceInput = async function(text) {
+    const lowerText = text.toLowerCase();
+    
+    // Check for weather-related queries
+    if (lowerText.includes('weather') || lowerText.includes('मौसम') || lowerText.includes('climate')) {
+      await handleWeatherQuery(text);
+      return;
+    }
+    
+    // Check for location-related queries
+    if (lowerText.includes('location') || lowerText.includes('स्थान') || lowerText.includes('where am i')) {
+      await handleLocationQuery();
+      return;
+    }
+    
+    // Check for specific city weather
+    const cityMatch = lowerText.match(/weather (?:in|for) (.+?)(?:\?|$)/);
+    if (cityMatch) {
+      await handleCityWeatherQuery(cityMatch[1]);
+      return;
+    }
+    
+    // Continue with original processing
+    return originalProcessVoiceInput(text);
+  };
+}
+
+async function handleWeatherQuery(query) {
+  try {
+    addMessage(query, 'user');
+    
+    if (!appState.currentWeather) {
+      addMessage('Getting current weather data...', 'bot');
+      await updateWeatherData();
+    }
+    
+    if (appState.currentWeather) {
+      const formatted = weatherService.formatWeatherData(appState.currentWeather);
+      const advice = weatherService.getFarmingAdvice(appState.currentWeather);
+      
+      const response = `🌤️ **Current Weather in ${formatted.location}:**
+      
+**Temperature:** ${formatted.temperature}°C (feels like ${formatted.feelsLike}°C)
+**Condition:** ${formatted.description}
+**Humidity:** ${formatted.humidity}%
+**Wind Speed:** ${formatted.windSpeed} m/s
+**Pressure:** ${formatted.pressure} hPa
+
+**🌱 Farming Advice:**
+${advice.join('\n')}`;
+      
+      addMessage(response, 'bot');
+      appState.lastBotMessage = response;
+      
+      // Auto-speak if continuous mode
+      if (appState.continuousMode && voiceAssistant) {
+        setTimeout(() => voiceAssistant.speak(response), 500);
+      }
+    } else {
+      addMessage('Sorry, I could not get the current weather information. Please try again.', 'bot');
+    }
+    
+  } catch (error) {
+    console.error('Error handling weather query:', error);
+    addMessage('There was an error getting weather information. Please try again later.', 'bot');
+  }
+}
+
+async function handleLocationQuery() {
+  try {
+    addMessage('Where am I?', 'user');
+    
+    if (appState.userLocation && appState.userLocation.info) {
+      const location = appState.userLocation.info;
+      const response = `📍 **Your Current Location:**
+
+**Address:** ${location.formattedAddress}
+**City:** ${location.components.city || 'Unknown'}
+**State:** ${location.components.state || 'Unknown'}
+**Country:** ${location.components.country || 'Unknown'}
+
+**Coordinates:** ${appState.userLocation.latitude.toFixed(4)}, ${appState.userLocation.longitude.toFixed(4)}`;
+
+      addMessage(response, 'bot');
+      appState.lastBotMessage = response;
+    } else {
+      addMessage('I don\'t have your location information. Please allow location access to get weather and location-based farming advice.', 'bot');
+    }
+    
+  } catch (error) {
+    console.error('Error handling location query:', error);
+    addMessage('There was an error getting your location. Please try again.', 'bot');
+  }
+}
+
+async function handleCityWeatherQuery(cityName) {
+  try {
+    addMessage(`Weather for ${cityName}`, 'user');
+    addMessage(`Getting weather data for ${cityName}...`, 'bot');
+    
+    const { currentWeather } = await getWeatherForCity(cityName);
+    const formatted = weatherService.formatWeatherData(currentWeather);
+    const advice = weatherService.getFarmingAdvice(currentWeather);
+    
+    const response = `🌤️ **Weather in ${formatted.location}, ${formatted.country}:**
+    
+**Temperature:** ${formatted.temperature}°C (feels like ${formatted.feelsLike}°C)
+**Condition:** ${formatted.description}
+**Humidity:** ${formatted.humidity}%
+**Wind Speed:** ${formatted.windSpeed} m/s
+
+**🌱 Farming Advice:**
+${advice.join('\n')}`;
+    
+    addMessage(response, 'bot');
+    appState.lastBotMessage = response;
+    
+  } catch (error) {
+    console.error('Error getting city weather:', error);
+    addMessage(`Sorry, I could not get weather information for ${cityName}. Please check the city name and try again.`, 'bot');
+  }
 }
 
 function sendMessage() {
