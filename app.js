@@ -43,11 +43,510 @@ const appData = {
     "Tea", "Coffee", "Jute", "Potato", "Onion", "Banana"
   ],
   diseases: [
-    {name: "Leaf Blight", crop: "Rice", symptoms: ["Brown spots", "Yellowing"], treatment: "Apply copper-based fungicide spray every 10 days"},
-    {name: "Powdery Mildew", crop: "Wheat", symptoms: ["White powder on leaves", "Stunted growth"], treatment: "Use sulfur treatment and improve air circulation"},
-    {name: "Bollworm", crop: "Cotton", symptoms: ["Holes in bolls", "Damaged flowers"], treatment: "Apply Bt spray and use pheromone traps"},
-    {name: "Late Blight", crop: "Potato", symptoms: ["Dark lesions", "White mold"], treatment: "Apply copper fungicide and remove affected plants"},
-    {name: "Rust", crop: "Wheat", symptoms: ["Orange pustules", "Leaf damage"], treatment: "Use resistant varieties and apply fungicide"}
+    // Rice Diseases
+    {
+      id: "rice_001",
+      name: "Rice Blast",
+      crop: "Rice",
+      scientificName: "Magnaporthe oryzae",
+      category: "Fungal",
+      severity: "High",
+      symptoms: ["Gray-green lesions on leaves", "Diamond-shaped spots", "Lesions on neck", "White to gray center with brown margin"],
+      causes: ["High humidity", "Temperature 25-28°C", "Dense planting", "Excess nitrogen"],
+      treatment: "Apply Tricyclazole or Carpropamid fungicide. Reduce nitrogen fertilizer. Improve drainage.",
+      prevention: ["Use resistant varieties", "Avoid excess nitrogen", "Proper spacing", "Field sanitation"],
+      affectedParts: ["Leaves", "Neck", "Panicle"],
+      economicLoss: "10-50%",
+      confidence: 0.95
+    },
+    {
+      id: "rice_002",
+      name: "Rice Brown Spot",
+      crop: "Rice",
+      scientificName: "Bipolaris oryzae",
+      category: "Fungal",
+      severity: "Medium",
+      symptoms: ["Brown oval spots on leaves", "Dark brown lesions", "Seedling blight", "Grain discoloration"],
+      causes: ["Nutrient deficiency", "Water stress", "Poor soil", "High humidity"],
+      treatment: "Apply Mancozeb or Carbendazim. Improve soil fertility. Ensure proper irrigation.",
+      prevention: ["Balanced fertilization", "Good water management", "Seed treatment", "Crop rotation"],
+      affectedParts: ["Leaves", "Grains", "Seedlings"],
+      economicLoss: "5-20%",
+      confidence: 0.92
+    },
+    {
+      id: "rice_003",
+      name: "Rice Leaf Blight",
+      crop: "Rice",
+      scientificName: "Xanthomonas oryzae",
+      category: "Bacterial",
+      severity: "High",
+      symptoms: ["Yellow stripes on leaves", "Water-soaked lesions", "Leaf tip burning", "V-shaped lesions"],
+      causes: ["High humidity", "Warm temperature", "Wind-driven rain", "Wounds in plants"],
+      treatment: "Apply Streptocycline or Copper oxychloride. Remove infected plants.",
+      prevention: ["Use resistant varieties", "Avoid overhead irrigation", "Field sanitation", "Balanced nutrition"],
+      affectedParts: ["Leaves"],
+      economicLoss: "20-40%",
+      confidence: 0.88
+    },
+
+    // Wheat Diseases
+    {
+      id: "wheat_001",
+      name: "Wheat Rust",
+      crop: "Wheat",
+      scientificName: "Puccinia triticina",
+      category: "Fungal",
+      severity: "High",
+      symptoms: ["Orange-red pustules on leaves", "Small circular spots", "Leaf yellowing", "Premature drying"],
+      causes: ["Cool moist weather", "Temperature 15-25°C", "High humidity", "Dense canopy"],
+      treatment: "Apply Propiconazole or Tebuconazole fungicide immediately upon detection.",
+      prevention: ["Use resistant varieties", "Early sowing", "Proper spacing", "Remove alternate hosts"],
+      affectedParts: ["Leaves", "Stems"],
+      economicLoss: "10-40%",
+      confidence: 0.94
+    },
+    {
+      id: "wheat_002",
+      name: "Powdery Mildew",
+      crop: "Wheat",
+      scientificName: "Blumeria graminis",
+      category: "Fungal",
+      severity: "Medium",
+      symptoms: ["White powdery growth on leaves", "Stunted growth", "Reduced tillering", "Premature senescence"],
+      causes: ["Cool humid conditions", "Dense planting", "Excess nitrogen", "Poor air circulation"],
+      treatment: "Apply Sulfur or Triadimefon. Improve air circulation. Reduce nitrogen.",
+      prevention: ["Resistant varieties", "Proper spacing", "Balanced fertilization", "Good ventilation"],
+      affectedParts: ["Leaves", "Stems"],
+      economicLoss: "5-25%",
+      confidence: 0.91
+    },
+
+    // Cotton Diseases
+    {
+      id: "cotton_001",
+      name: "Cotton Bollworm",
+      crop: "Cotton",
+      scientificName: "Helicoverpa armigera",
+      category: "Insect Pest",
+      severity: "High",
+      symptoms: ["Holes in bolls", "Damaged squares", "Frass on plants", "Larval feeding damage"],
+      causes: ["Warm weather", "High humidity", "Dense crop", "Poor natural enemies"],
+      treatment: "Apply NPV or Bt spray. Use pheromone traps. Release Trichogramma.",
+      prevention: ["Bt cotton varieties", "Monitor with traps", "Biological control", "Crop rotation"],
+      affectedParts: ["Bolls", "Squares", "Flowers"],
+      economicLoss: "20-60%",
+      confidence: 0.89
+    },
+    {
+      id: "cotton_002",
+      name: "Cotton Leaf Curl",
+      crop: "Cotton",
+      scientificName: "Begomovirus",
+      category: "Viral",
+      severity: "High",
+      symptoms: ["Upward curling of leaves", "Vein thickening", "Stunted growth", "Reduced bolls"],
+      causes: ["Whitefly transmission", "High temperature", "Susceptible varieties", "Poor field hygiene"],
+      treatment: "Remove infected plants. Control whiteflies with Imidacloprid. Use resistant varieties.",
+      prevention: ["CLCuV resistant varieties", "Whitefly control", "Field sanitation", "Border crops"],
+      affectedParts: ["Leaves", "Entire plant"],
+      economicLoss: "30-80%",
+      confidence: 0.93
+    },
+
+    // Tomato Diseases
+    {
+      id: "tomato_001",
+      name: "Tomato Late Blight",
+      crop: "Tomato",
+      scientificName: "Phytophthora infestans",
+      category: "Fungal",
+      severity: "High",
+      symptoms: ["Dark water-soaked lesions", "White mold on leaf undersides", "Brown fruit rot", "Rapid plant death"],
+      causes: ["Cool moist weather", "High humidity", "Poor air circulation", "Overhead irrigation"],
+      treatment: "Apply Metalaxyl or Dimethomorph. Remove infected plants. Improve drainage.",
+      prevention: ["Resistant varieties", "Drip irrigation", "Good spacing", "Fungicide spray"],
+      affectedParts: ["Leaves", "Stems", "Fruits"],
+      economicLoss: "50-100%",
+      confidence: 0.96
+    },
+    {
+      id: "tomato_002",
+      name: "Tomato Early Blight",
+      crop: "Tomato",
+      scientificName: "Alternaria solani",
+      category: "Fungal",
+      severity: "Medium",
+      symptoms: ["Brown spots with concentric rings", "Target-like lesions", "Leaf yellowing", "Fruit spots"],
+      causes: ["Warm humid weather", "Plant stress", "Poor nutrition", "Wounds"],
+      treatment: "Apply Mancozeb or Chlorothalonil. Improve plant nutrition. Remove infected leaves.",
+      prevention: ["Crop rotation", "Resistant varieties", "Good nutrition", "Avoid overhead watering"],
+      affectedParts: ["Leaves", "Stems", "Fruits"],
+      economicLoss: "20-40%",
+      confidence: 0.88
+    },
+
+    // Potato Diseases
+    {
+      id: "potato_001",
+      name: "Potato Late Blight",
+      crop: "Potato",
+      scientificName: "Phytophthora infestans",
+      category: "Fungal",
+      severity: "High",
+      symptoms: ["Dark lesions on leaves", "White mold on undersides", "Brown tuber rot", "Rapid plant collapse"],
+      causes: ["Cool moist conditions", "High humidity", "Dense foliage", "Poor drainage"],
+      treatment: "Apply Metalaxyl-M or Fenamidone. Remove infected plants. Improve field drainage.",
+      prevention: ["Certified seed", "Resistant varieties", "Proper spacing", "Avoid overhead irrigation"],
+      affectedParts: ["Leaves", "Stems", "Tubers"],
+      economicLoss: "40-100%",
+      confidence: 0.97
+    },
+
+    // Corn/Maize Diseases
+    {
+      id: "corn_001",
+      name: "Corn Leaf Blight",
+      crop: "Maize",
+      scientificName: "Exserohilum turcicum",
+      category: "Fungal",
+      severity: "Medium",
+      symptoms: ["Long gray-green lesions", "Tan colored spots", "Leaf death", "Reduced yield"],
+      causes: ["Warm humid weather", "Dense planting", "Corn residue", "Susceptible varieties"],
+      treatment: "Apply Propiconazole or Azoxystrobin. Remove crop residue. Use resistant varieties.",
+      prevention: ["Resistant hybrids", "Crop rotation", "Residue management", "Proper spacing"],
+      affectedParts: ["Leaves"],
+      economicLoss: "10-30%",
+      confidence: 0.85
+    },
+
+    // Sugarcane Diseases
+    {
+      id: "sugarcane_001",
+      name: "Sugarcane Red Rot",
+      crop: "Sugarcane",
+      scientificName: "Colletotrichum falcatum",
+      category: "Fungal",
+      severity: "High",
+      symptoms: ["Reddish discoloration in internodes", "White patches with red margins", "Stunted growth", "Poor juice quality"],
+      causes: ["High temperature", "High humidity", "Wounds", "Susceptible varieties"],
+      treatment: "Remove infected canes. Apply Carbendazim. Use resistant varieties.",
+      prevention: ["Disease-free setts", "Resistant varieties", "Proper field sanitation", "Avoid wounds"],
+      affectedParts: ["Stems", "Internodes"],
+      economicLoss: "25-75%",
+      confidence: 0.92
+    },
+
+    // Apple Diseases
+    {
+      id: "apple_001",
+      name: "Apple Scab",
+      crop: "Apple",
+      scientificName: "Venturia inaequalis",
+      category: "Fungal",
+      severity: "High",
+      symptoms: ["Dark olive-green spots on leaves", "Scabby lesions on fruits", "Premature leaf drop", "Fruit cracking"],
+      causes: ["Cool moist spring weather", "Overhead irrigation", "Dense canopy", "Poor air circulation"],
+      treatment: "Apply Captan or Myclobutanil. Prune for air circulation. Remove fallen leaves.",
+      prevention: ["Resistant varieties", "Proper pruning", "Good sanitation", "Fungicide program"],
+      affectedParts: ["Leaves", "Fruits", "Twigs"],
+      economicLoss: "30-70%",
+      confidence: 0.94
+    },
+
+    // General/Multi-crop diseases
+    {
+      id: "general_001",
+      name: "Nutrient Deficiency - Nitrogen",
+      crop: "Multiple",
+      scientificName: "N/A",
+      category: "Nutritional",
+      severity: "Medium",
+      symptoms: ["Yellowing of older leaves", "Stunted growth", "Reduced vigor", "Poor flowering"],
+      causes: ["Poor soil fertility", "Excess rainfall", "Sandy soil", "Poor root development"],
+      treatment: "Apply urea or ammonium sulfate. Use foliar spray. Improve soil organic matter.",
+      prevention: ["Soil testing", "Balanced fertilization", "Organic matter addition", "Proper irrigation"],
+      affectedParts: ["Leaves", "Entire plant"],
+      economicLoss: "10-50%",
+      confidence: 0.82
+    },
+    {
+      id: "general_002",
+      name: "Aphid Infestation",
+      crop: "Multiple",
+      scientificName: "Aphididae",
+      category: "Insect Pest",
+      severity: "Medium",
+      symptoms: ["Curled leaves", "Sticky honeydew", "Stunted growth", "Yellowing leaves"],
+      causes: ["Warm weather", "Succulent growth", "Poor natural enemies", "Dense planting"],
+      treatment: "Apply Imidacloprid or Thiamethoxam. Use reflective mulch. Release ladybird beetles.",
+      prevention: ["Monitor regularly", "Encourage beneficial insects", "Avoid excess nitrogen", "Use yellow traps"],
+      affectedParts: ["Leaves", "Shoots", "Buds"],
+      economicLoss: "5-30%",
+      confidence: 0.86
+    }
+  ],
+  soilAnalysisData: [
+    // Soil Health Conditions
+    {
+      id: "soil_001",
+      name: "Healthy Fertile Soil",
+      type: "Optimal",
+      category: "Soil Health",
+      severity: "Good",
+      description: "Rich, dark, well-structured soil with good organic content",
+      characteristics: ["Dark brown/black color", "Crumbly texture", "Good moisture retention", "Rich organic matter", "Earthworm presence"],
+      pHRange: "6.0-7.0",
+      organicMatter: "3-5%",
+      nutrients: {
+        nitrogen: "High",
+        phosphorus: "Adequate",
+        potassium: "Good",
+        micronutrients: "Balanced"
+      },
+      recommendations: [
+        "Continue current soil management practices",
+        "Maintain organic matter through compost addition",
+        "Regular crop rotation to preserve soil health",
+        "Minimal tillage to preserve soil structure"
+      ],
+      suitableCrops: ["Rice", "Wheat", "Vegetables", "Legumes", "Fruits"],
+      confidence: 0.95
+    },
+    {
+      id: "soil_002", 
+      name: "Sandy Soil",
+      type: "Texture Issue",
+      category: "Soil Structure",
+      severity: "Medium",
+      description: "Light-colored, loose soil with poor water and nutrient retention",
+      characteristics: ["Light color", "Loose texture", "Fast drainage", "Low water retention", "Gritty feel"],
+      pHRange: "6.5-7.5",
+      organicMatter: "1-2%",
+      nutrients: {
+        nitrogen: "Low",
+        phosphorus: "Variable",
+        potassium: "Low",
+        micronutrients: "Deficient"
+      },
+      recommendations: [
+        "Add organic matter regularly (compost, manure)",
+        "Use mulching to retain moisture",
+        "Frequent but light fertilizer applications",
+        "Plant cover crops to improve soil structure",
+        "Install drip irrigation system"
+      ],
+      suitableCrops: ["Carrots", "Radish", "Groundnut", "Millets", "Watermelon"],
+      confidence: 0.88
+    },
+    {
+      id: "soil_003",
+      name: "Clay Soil", 
+      type: "Drainage Issue",
+      category: "Soil Structure",
+      severity: "Medium",
+      description: "Heavy, dense soil with poor drainage and aeration",
+      characteristics: ["Dark heavy texture", "Poor drainage", "Cracks when dry", "Sticky when wet", "Slow water infiltration"],
+      pHRange: "6.0-8.0",
+      organicMatter: "2-4%",
+      nutrients: {
+        nitrogen: "Good",
+        phosphorus: "High",
+        potassium: "High", 
+        micronutrients: "Adequate"
+      },
+      recommendations: [
+        "Improve drainage with raised beds",
+        "Add organic matter to improve structure",
+        "Avoid working when soil is wet",
+        "Use gypsum to improve soil structure",
+        "Plant deep-rooted crops to break compaction"
+      ],
+      suitableCrops: ["Rice", "Sugarcane", "Cotton", "Soybean", "Mustard"],
+      confidence: 0.91
+    },
+    {
+      id: "soil_004",
+      name: "Acidic Soil",
+      type: "pH Problem", 
+      category: "Soil Chemistry",
+      severity: "High",
+      description: "Soil with low pH affecting nutrient availability",
+      characteristics: ["pH below 6.0", "Stunted plant growth", "Yellowing leaves", "Poor nodulation in legumes", "Aluminum toxicity signs"],
+      pHRange: "4.5-5.5",
+      organicMatter: "Variable",
+      nutrients: {
+        nitrogen: "Low availability",
+        phosphorus: "Locked",
+        potassium: "Variable",
+        micronutrients: "Toxic levels of Al, Mn"
+      },
+      recommendations: [
+        "Apply agricultural lime to raise pH",
+        "Use dolomitic lime if magnesium is deficient", 
+        "Add organic matter to buffer pH",
+        "Choose acid-tolerant crop varieties",
+        "Monitor soil pH regularly"
+      ],
+      suitableCrops: ["Tea", "Coffee", "Blueberries", "Potatoes", "Azaleas"],
+      confidence: 0.87
+    },
+    {
+      id: "soil_005",
+      name: "Alkaline Soil",
+      type: "pH Problem",
+      category: "Soil Chemistry", 
+      severity: "High",
+      description: "Soil with high pH causing nutrient deficiencies",
+      characteristics: ["pH above 7.5", "White salt deposits", "Iron deficiency yellowing", "Poor plant growth", "Crusty surface"],
+      pHRange: "8.0-9.5",
+      organicMatter: "1-3%",
+      nutrients: {
+        nitrogen: "Variable",
+        phosphorus: "Locked",
+        potassium: "Variable",
+        micronutrients: "Iron, Zinc deficient"
+      },
+      recommendations: [
+        "Apply sulfur to lower pH gradually",
+        "Use acidifying fertilizers",
+        "Add organic matter regularly",
+        "Apply iron chelates for immediate relief",
+        "Improve drainage to reduce salt accumulation"
+      ],
+      suitableCrops: ["Barley", "Sugar beet", "Spinach", "Asparagus", "Brassicas"],
+      confidence: 0.89
+    },
+    {
+      id: "soil_006",
+      name: "Saline Soil",
+      type: "Salinity Problem",
+      category: "Soil Chemistry",
+      severity: "High", 
+      description: "Soil with high salt content affecting plant growth",
+      characteristics: ["White salt crusts", "Poor germination", "Burnt leaf edges", "Stunted growth", "High electrical conductivity"],
+      pHRange: "7.0-8.5",
+      organicMatter: "Low",
+      nutrients: {
+        nitrogen: "Variable",
+        phosphorus: "May be locked",
+        potassium: "Usually high",
+        micronutrients: "Imbalanced"
+      },
+      recommendations: [
+        "Improve drainage to leach salts",
+        "Apply gypsum to displace sodium",
+        "Use salt-tolerant crops initially", 
+        "Add organic matter to improve structure",
+        "Install subsurface drainage systems"
+      ],
+      suitableCrops: ["Barley", "Date palm", "Salt-tolerant rice varieties", "Quinoa", "Halophytes"],
+      confidence: 0.92
+    },
+    {
+      id: "soil_007",
+      name: "Waterlogged Soil",
+      type: "Drainage Problem",
+      category: "Soil Physics",
+      severity: "High",
+      description: "Soil with poor drainage causing root problems",
+      characteristics: ["Standing water", "Foul smell", "Gray/blue coloration", "Root rot", "Poor aeration"],
+      pHRange: "Variable",
+      organicMatter: "Variable",
+      nutrients: {
+        nitrogen: "Denitrification losses",
+        phosphorus: "May be available",
+        potassium: "Leaching losses",
+        micronutrients: "Iron toxicity possible"
+      },
+      recommendations: [
+        "Install drainage systems immediately",
+        "Create raised beds for better drainage",
+        "Avoid traffic on wet soil",
+        "Plant water-tolerant crops temporarily",
+        "Improve soil structure with organic matter"
+      ],
+      suitableCrops: ["Rice", "Taro", "Watercress", "Cranberries", "Willows"],
+      confidence: 0.94
+    },
+    {
+      id: "soil_008", 
+      name: "Nutrient Deficient Soil",
+      type: "Fertility Problem",
+      category: "Soil Fertility",
+      severity: "Medium",
+      description: "Soil lacking essential nutrients for plant growth",
+      characteristics: ["Pale plant color", "Poor growth", "Low yields", "Yellowing leaves", "Delayed maturity"],
+      pHRange: "Variable",
+      organicMatter: "Low (0-1%)",
+      nutrients: {
+        nitrogen: "Deficient",
+        phosphorus: "Low",
+        potassium: "Inadequate", 
+        micronutrients: "Multiple deficiencies"
+      },
+      recommendations: [
+        "Conduct detailed soil test",
+        "Apply balanced NPK fertilizers",
+        "Add micronutrient supplements",
+        "Increase organic matter content",
+        "Use crop-specific fertilizer programs"
+      ],
+      suitableCrops: ["Light feeders initially", "Legumes to fix nitrogen", "Green manure crops"],
+      confidence: 0.86
+    },
+    {
+      id: "soil_009",
+      name: "Compacted Soil",
+      type: "Physical Problem", 
+      category: "Soil Physics",
+      severity: "Medium",
+      description: "Dense soil with poor root penetration and water infiltration",
+      characteristics: ["Hard surface", "Poor water infiltration", "Runoff problems", "Shallow root development", "Equipment tracks visible"],
+      pHRange: "Variable",
+      organicMatter: "Variable",
+      nutrients: {
+        nitrogen: "Poor uptake",
+        phosphorus: "Limited availability",
+        potassium: "Reduced uptake",
+        micronutrients: "Poor mobility"
+      },
+      recommendations: [
+        "Deep tillage to break compaction",
+        "Avoid traffic on wet soil",
+        "Add organic matter to improve structure",
+        "Use controlled traffic farming",
+        "Plant deep-rooted cover crops"
+      ],
+      suitableCrops: ["Deep-rooted crops like sunflower", "Tillage radish", "Alfalfa"],
+      confidence: 0.83
+    },
+    {
+      id: "soil_010",
+      name: "Eroded Soil",
+      type: "Degradation Problem",
+      category: "Soil Conservation",
+      severity: "High",
+      description: "Soil with significant topsoil loss and reduced fertility",
+      characteristics: ["Exposed subsoil", "Rills and gullies", "Reduced organic matter", "Poor water retention", "Lower productivity"],
+      pHRange: "Variable", 
+      organicMatter: "Very low (0-0.5%)",
+      nutrients: {
+        nitrogen: "Very low",
+        phosphorus: "Depleted",
+        potassium: "Low",
+        micronutrients: "Severely deficient"
+      },
+      recommendations: [
+        "Implement immediate erosion control",
+        "Plant cover crops for soil protection",
+        "Build terraces on slopes",
+        "Add large amounts of organic matter",
+        "Use conservation tillage practices"
+      ],
+      suitableCrops: ["Erosion control grasses", "Pioneer legumes", "Soil-building crops"],
+      confidence: 0.91
+    }
   ],
   marketplaceItems: [
     {
@@ -2309,8 +2808,71 @@ function displayImagePreview(file) {
     previewImage.src = e.target.result;
     uploadBox.querySelector('.upload-box__content').classList.add('hidden');
     uploadPreview.classList.remove('hidden');
+    
+    // Store the image data for analysis
+    window.uploadedImageData = {
+      file: file,
+      dataUrl: e.target.result,
+      uploadTime: new Date()
+    };
+    
+    // Auto-detect image type and update UI
+    detectImageType(e.target.result);
   };
   reader.readAsDataURL(file);
+}
+
+function detectImageType(imageDataUrl) {
+  // Simulate image type detection based on filename and basic analysis
+  const file = window.uploadedImageData?.file;
+  const fileName = file?.name?.toLowerCase() || '';
+  
+  let detectedType = 'plant'; // default
+  let confidence = 0.7;
+  
+  // Simple heuristic detection based on filename keywords
+  if (fileName.includes('soil') || fileName.includes('ground') || fileName.includes('earth') || fileName.includes('dirt')) {
+    detectedType = 'soil';
+    confidence = 0.85;
+  } else if (fileName.includes('leaf') || fileName.includes('plant') || fileName.includes('crop') || fileName.includes('disease')) {
+    detectedType = 'plant';
+    confidence = 0.85;
+  }
+  
+  // Store detection results
+  window.uploadedImageData.detectedType = detectedType;
+  window.uploadedImageData.detectionConfidence = confidence;
+  
+  // Update UI to show detection
+  updateImageTypeIndicator(detectedType, confidence);
+}
+
+function updateImageTypeIndicator(type, confidence) {
+  const previewContainer = document.getElementById('uploadPreview');
+  
+  // Remove existing indicator
+  const existingIndicator = previewContainer.querySelector('.image-type-indicator');
+  if (existingIndicator) {
+    existingIndicator.remove();
+  }
+  
+  // Add new type indicator
+  const indicator = document.createElement('div');
+  indicator.className = 'image-type-indicator';
+  indicator.innerHTML = `
+    <div class="type-badge type-${type}">
+      ${type === 'soil' ? '🌍' : '🌱'} ${type.charAt(0).toUpperCase() + type.slice(1)} Image
+      <span class="confidence-badge">${Math.round(confidence * 100)}%</span>
+    </div>
+    <p class="type-description">
+      ${type === 'soil' 
+        ? 'This appears to be a soil image. I will analyze soil health, composition, and provide farming recommendations.'
+        : 'This appears to be a plant image. I will analyze for diseases, pests, and health issues.'
+      }
+    </p>
+  `;
+  
+  previewContainer.appendChild(indicator);
 }
 
 function analyzeDisease() {
@@ -2318,25 +2880,1211 @@ function analyzeDisease() {
   const diseaseType = document.getElementById('diseaseType');
   const symptoms = document.getElementById('symptoms');
   const treatment = document.getElementById('treatment');
+  const confidenceScore = document.getElementById('confidenceScore');
   
-  const randomDisease = appData.diseases[Math.floor(Math.random() * appData.diseases.length)];
+  // Determine analysis type based on uploaded image
+  const imageType = window.uploadedImageData?.detectedType || 'plant';
   
+  // Show loading state
   analysisResults.classList.add('loading');
   analysisResults.classList.remove('hidden');
   
+  // Update loading message based on image type
+  const loadingMessage = document.createElement('div');
+  loadingMessage.className = 'loading-message';
+  
+  if (imageType === 'soil') {
+    loadingMessage.innerHTML = `
+      <div class="analysis-stages">
+        <div class="stage active">🌍 Analyzing soil composition...</div>
+        <div class="stage">🧪 Testing soil properties...</div>
+        <div class="stage">📊 Evaluating soil health...</div>
+        <div class="stage">🌱 Generating recommendations...</div>
+      </div>
+    `;
+  } else {
+    loadingMessage.innerHTML = `
+      <div class="analysis-stages">
+        <div class="stage active">🔍 Analyzing plant image...</div>
+        <div class="stage">🧠 Processing with AI...</div>
+        <div class="stage">📊 Generating diagnosis...</div>
+        <div class="stage">💊 Finding treatment...</div>
+      </div>
+    `;
+  }
+  
+  analysisResults.appendChild(loadingMessage);
+  
+  // Simulate advanced AI analysis with multiple stages
+  let currentStage = 0;
+  const stages = loadingMessage.querySelectorAll('.stage');
+  
+  const stageInterval = setInterval(() => {
+    if (currentStage < stages.length) {
+      stages[currentStage].classList.remove('active');
+      currentStage++;
+      if (currentStage < stages.length) {
+        stages[currentStage].classList.add('active');
+      }
+    } else {
+      clearInterval(stageInterval);
+    }
+  }, 800);
+  
   setTimeout(() => {
-    diseaseType.textContent = randomDisease.name;
-    symptoms.textContent = randomDisease.symptoms.join(', ');
-    treatment.textContent = randomDisease.treatment;
+    // Remove loading message
+    if (loadingMessage) loadingMessage.remove();
+    
+    // Perform appropriate analysis
+    let analysisResult;
+    if (imageType === 'soil') {
+      analysisResult = performSoilAnalysis();
+      displaySoilAnalysisResults(analysisResult, {
+        diseaseType,
+        symptoms,
+        treatment,
+        confidenceScore,
+        analysisResults
+      });
+    } else {
+      analysisResult = performAdvancedDiseaseDetection();
+      displayDiseaseResults(analysisResult, {
+        diseaseType,
+        symptoms,
+        treatment,
+        confidenceScore,
+        analysisResults
+      });
+    }
     
     analysisResults.classList.remove('loading');
     
-    // Speak result if voice is enabled
-    const resultText = `Analysis complete. Disease detected: ${randomDisease.name}. Click the speaker button to hear the full result.`;
+    // Speak comprehensive result
+    const resultText = generateVoiceResult(analysisResult, imageType);
     if (voiceAssistant) {
       voiceAssistant.speak(resultText);
     }
-  }, 2000);
+  }, 3500);
+}
+
+function performSoilAnalysis() {
+  // Simulate advanced soil analysis with weighted selection
+  const availableSoilConditions = appData.soilAnalysisData;
+  
+  // Simulate soil analysis factors
+  const soilFactors = {
+    color: Math.random(),
+    texture: Math.random(),
+    moisture: Math.random(),
+    organicMatter: Math.random(),
+    structure: Math.random()
+  };
+  
+  // Weight soil conditions based on common occurrence and regional factors
+  const weightedConditions = availableSoilConditions.map(condition => ({
+    ...condition,
+    detectionWeight: calculateSoilDetectionWeight(condition, soilFactors)
+  }));
+  
+  // Sort by detection weight and select most likely
+  weightedConditions.sort((a, b) => b.detectionWeight - a.detectionWeight);
+  
+  // Add some randomness but favor higher weighted conditions
+  const randomFactor = Math.random();
+  let selectedCondition;
+  
+  if (randomFactor < 0.6) {
+    // 60% chance to select top 3 most likely
+    selectedCondition = weightedConditions[Math.floor(Math.random() * Math.min(3, weightedConditions.length))];
+  } else {
+    // 40% chance for any condition
+    selectedCondition = weightedConditions[Math.floor(Math.random() * weightedConditions.length)];
+  }
+  
+  // Adjust confidence based on image quality and soil characteristics
+  const baseConfidence = selectedCondition.confidence || 0.85;
+  const adjustedConfidence = Math.min(0.99, Math.max(0.70, baseConfidence + (Math.random() - 0.5) * 0.15));
+  
+  return {
+    ...selectedCondition,
+    confidence: adjustedConfidence,
+    analysisDate: new Date(),
+    additionalInfo: generateSoilAdditionalInfo(selectedCondition),
+    analysisType: 'soil'
+  };
+}
+
+function calculateSoilDetectionWeight(condition, soilFactors) {
+  let weight = condition.confidence || 0.5;
+  
+  // Adjust weight based on soil condition characteristics
+  if (condition.severity === 'Good') weight += 0.3; // Healthy soil is common
+  if (condition.category === 'Soil Health') weight += 0.2;
+  if (condition.type === 'Optimal') weight += 0.25;
+  
+  // Factor in simulated soil analysis
+  weight += (soilFactors.color + soilFactors.texture + soilFactors.organicMatter) * 0.08;
+  
+  return weight;
+}
+
+function generateSoilAdditionalInfo(soilCondition) {
+  return {
+    seasonalConsiderations: getSoilSeasonalInfo(soilCondition),
+    managementPractices: getSoilManagementPractices(soilCondition),
+    improvementTimeline: getSoilImprovementTimeline(soilCondition),
+    costEstimates: getSoilImprovementCosts(soilCondition)
+  };
+}
+
+function getSoilSeasonalInfo(condition) {
+  if (condition.category === 'Soil Chemistry') {
+    return 'pH adjustments are most effective during pre-planting season (March-May)';
+  } else if (condition.type === 'Drainage Problem') {
+    return 'Drainage improvements should be done during dry season (November-February)';
+  } else if (condition.category === 'Soil Fertility') {
+    return 'Nutrient management is critical during crop growing seasons';
+  }
+  return 'Year-round monitoring and management recommended';
+}
+
+function getSoilManagementPractices(condition) {
+  const practices = [];
+  
+  if (condition.category === 'Soil Structure') {
+    practices.push('Avoid tillage when soil is wet');
+    practices.push('Use controlled traffic farming');
+    practices.push('Maintain permanent soil cover');
+  }
+  
+  if (condition.category === 'Soil Chemistry') {
+    practices.push('Regular soil pH monitoring');
+    practices.push('Gradual soil amendments');
+    practices.push('Balanced fertilization program');
+  }
+  
+  if (condition.category === 'Soil Physics') {
+    practices.push('Improve soil drainage');
+    practices.push('Break soil compaction');
+    practices.push('Enhance soil aeration');
+  }
+  
+  practices.push('Regular organic matter addition');
+  practices.push('Crop rotation for soil health');
+  
+  return practices;
+}
+
+function getSoilImprovementTimeline(condition) {
+  const timeline = {};
+  
+  if (condition.severity === 'High') {
+    timeline.immediate = '1-2 weeks: Start urgent corrective measures';
+    timeline.shortTerm = '1-3 months: Implement soil amendments';
+    timeline.mediumTerm = '6-12 months: Monitor soil improvements';
+    timeline.longTerm = '1-3 years: Achieve target soil health';
+  } else if (condition.severity === 'Medium') {
+    timeline.immediate = '1 month: Plan soil improvement strategy';
+    timeline.shortTerm = '3-6 months: Apply soil amendments';
+    timeline.mediumTerm = '6-18 months: Track soil progress';
+    timeline.longTerm = '2-4 years: Reach optimal soil condition';
+  } else {
+    timeline.immediate = 'Ongoing: Maintain current practices';
+    timeline.shortTerm = '2-3 months: Fine-tune management';
+    timeline.mediumTerm = '6-12 months: Monitor soil status';
+    timeline.longTerm = '1-2 years: Sustain soil health';
+  }
+  
+  return timeline;
+}
+
+function getSoilImprovementCosts(condition) {
+  // Simplified cost estimation in INR per acre
+  let baseCost = 2000;
+  
+  if (condition.severity === 'High') baseCost *= 3;
+  else if (condition.severity === 'Medium') baseCost *= 2;
+  
+  if (condition.category === 'Soil Chemistry') baseCost *= 1.5; // pH correction is expensive
+  if (condition.type === 'Drainage Problem') baseCost *= 2.5; // Drainage systems are costly
+  
+  return {
+    immediate: `₹${Math.round(baseCost * 0.3)} - ₹${Math.round(baseCost * 0.5)} per acre`,
+    annual: `₹${Math.round(baseCost * 0.8)} - ₹${Math.round(baseCost * 1.2)} per acre`,
+    total: `₹${Math.round(baseCost)} - ₹${Math.round(baseCost * 1.8)} per acre over 3 years`
+  };
+}
+
+function performAdvancedDiseaseDetection() {
+  // Simulate advanced AI detection with weighted selection
+  const availableDiseases = appData.diseases;
+  
+  // Simulate image analysis factors
+  const imageFactors = {
+    leafCondition: Math.random(),
+    colorAnalysis: Math.random(),
+    spotPattern: Math.random(),
+    severity: Math.random()
+  };
+  
+  // Weight diseases based on common occurrence and season
+  const weightedDiseases = availableDiseases.map(disease => ({
+    ...disease,
+    detectionWeight: calculateDetectionWeight(disease, imageFactors)
+  }));
+  
+  // Sort by detection weight and select most likely
+  weightedDiseases.sort((a, b) => b.detectionWeight - a.detectionWeight);
+  
+  // Add some randomness but favor higher weighted diseases
+  const randomFactor = Math.random();
+  let selectedDisease;
+  
+  if (randomFactor < 0.7) {
+    // 70% chance to select top 3 most likely
+    selectedDisease = weightedDiseases[Math.floor(Math.random() * Math.min(3, weightedDiseases.length))];
+  } else {
+    // 30% chance for any disease (simulating edge cases)
+    selectedDisease = weightedDiseases[Math.floor(Math.random() * weightedDiseases.length)];
+  }
+  
+  // Adjust confidence based on image quality and disease characteristics
+  const baseConfidence = selectedDisease.confidence || 0.85;
+  const adjustedConfidence = Math.min(0.99, Math.max(0.65, baseConfidence + (Math.random() - 0.5) * 0.2));
+  
+  return {
+    ...selectedDisease,
+    confidence: adjustedConfidence,
+    analysisDate: new Date(),
+    additionalInfo: generateAdditionalInfo(selectedDisease)
+  };
+}
+
+function calculateDetectionWeight(disease, imageFactors) {
+  let weight = disease.confidence || 0.5;
+  
+  // Adjust weight based on disease characteristics
+  if (disease.severity === 'High') weight += 0.2;
+  if (disease.category === 'Fungal') weight += 0.15; // More common
+  if (disease.crop === 'Rice' || disease.crop === 'Wheat') weight += 0.1; // Common crops
+  
+  // Factor in image analysis simulation
+  weight += (imageFactors.leafCondition + imageFactors.colorAnalysis) * 0.1;
+  
+  return weight;
+}
+
+function displaySoilAnalysisResults(soilCondition, elements) {
+  const { diseaseType, symptoms, treatment, confidenceScore, analysisResults } = elements;
+  
+  // Update basic information for soil analysis
+  diseaseType.textContent = soilCondition.name;
+  symptoms.textContent = soilCondition.characteristics.join(', ');
+  treatment.textContent = soilCondition.recommendations.slice(0, 2).join('. ');
+  confidenceScore.textContent = `${Math.round(soilCondition.confidence * 100)}% Confidence`;
+  
+  // Create comprehensive soil analysis display
+  const soilAnalysisResults = document.createElement('div');
+  soilAnalysisResults.className = 'comprehensive-results soil-analysis-results';
+  soilAnalysisResults.innerHTML = `
+    <div class="soil-overview">
+      <div class="soil-header">
+        <div class="soil-identity">
+          <h3>🌍 ${soilCondition.name}</h3>
+          <p class="soil-description">${soilCondition.description}</p>
+          <div class="soil-tags">
+            <span class="tag category-${soilCondition.category?.toLowerCase().replace(/\s+/g, '-')}">${soilCondition.category}</span>
+            <span class="tag type-${soilCondition.type?.toLowerCase().replace(/\s+/g, '-')}">${soilCondition.type}</span>
+            <span class="tag severity-${soilCondition.severity?.toLowerCase()}">${soilCondition.severity} Condition</span>
+          </div>
+        </div>
+        <div class="confidence-meter">
+          <div class="confidence-circle" style="--confidence: ${Math.round(soilCondition.confidence * 100)}">
+            <div class="confidence-value">${Math.round(soilCondition.confidence * 100)}%</div>
+            <div class="confidence-label">Confidence</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="soil-analysis-details">
+      <div class="detail-section">
+        <h4>🧪 Soil Properties</h4>
+        <div class="soil-properties-grid">
+          <div class="property-card">
+            <div class="property-icon">🎯</div>
+            <div class="property-info">
+              <div class="property-label">pH Range</div>
+              <div class="property-value ph-${getPHCategory(soilCondition.pHRange)}">${soilCondition.pHRange}</div>
+            </div>
+          </div>
+          <div class="property-card">
+            <div class="property-icon">🌱</div>
+            <div class="property-info">
+              <div class="property-label">Organic Matter</div>
+              <div class="property-value">${soilCondition.organicMatter}</div>
+            </div>
+          </div>
+          <div class="property-card">
+            <div class="property-icon">💧</div>
+            <div class="property-info">
+              <div class="property-label">Soil Type</div>
+              <div class="property-value">${soilCondition.type}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="detail-section">
+        <h4>🔬 Nutrient Analysis</h4>
+        <div class="nutrient-analysis">
+          <div class="nutrient-item">
+            <span class="nutrient-name">Nitrogen (N)</span>
+            <div class="nutrient-bar">
+              <div class="nutrient-fill nutrient-${getNutrientLevel(soilCondition.nutrients.nitrogen)}" 
+                   style="width: ${getNutrientPercentage(soilCondition.nutrients.nitrogen)}%"></div>
+            </div>
+            <span class="nutrient-level">${soilCondition.nutrients.nitrogen}</span>
+          </div>
+          <div class="nutrient-item">
+            <span class="nutrient-name">Phosphorus (P)</span>
+            <div class="nutrient-bar">
+              <div class="nutrient-fill nutrient-${getNutrientLevel(soilCondition.nutrients.phosphorus)}" 
+                   style="width: ${getNutrientPercentage(soilCondition.nutrients.phosphorus)}%"></div>
+            </div>
+            <span class="nutrient-level">${soilCondition.nutrients.phosphorus}</span>
+          </div>
+          <div class="nutrient-item">
+            <span class="nutrient-name">Potassium (K)</span>
+            <div class="nutrient-bar">
+              <div class="nutrient-fill nutrient-${getNutrientLevel(soilCondition.nutrients.potassium)}" 
+                   style="width: ${getNutrientPercentage(soilCondition.nutrients.potassium)}%"></div>
+            </div>
+            <span class="nutrient-level">${soilCondition.nutrients.potassium}</span>
+          </div>
+          <div class="nutrient-item">
+            <span class="nutrient-name">Micronutrients</span>
+            <div class="nutrient-bar">
+              <div class="nutrient-fill nutrient-${getNutrientLevel(soilCondition.nutrients.micronutrients)}" 
+                   style="width: ${getNutrientPercentage(soilCondition.nutrients.micronutrients)}%"></div>
+            </div>
+            <span class="nutrient-level">${soilCondition.nutrients.micronutrients}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="detail-section">
+        <h4>🌾 Suitable Crops</h4>
+        <div class="suitable-crops">
+          ${soilCondition.suitableCrops.map(crop => `
+            <div class="crop-tag">${crop}</div>
+          `).join('')}
+        </div>
+      </div>
+      
+      <div class="detail-section">
+        <h4>🔧 Soil Characteristics</h4>
+        <ul class="characteristics-list">
+          ${soilCondition.characteristics.map(char => `<li>${char}</li>`).join('')}
+        </ul>
+      </div>
+      
+      <div class="detail-section">
+        <h4>💡 Improvement Recommendations</h4>
+        <div class="recommendations-plan">
+          <div class="immediate-recommendations">
+            <h5>Immediate Actions:</h5>
+            <ul>
+              ${soilCondition.recommendations.slice(0, 3).map(rec => `<li>${rec}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="long-term-recommendations">
+            <h5>Long-term Management:</h5>
+            <ul>
+              ${soilCondition.recommendations.slice(3).map(rec => `<li>${rec}</li>`).join('')}
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="detail-section">
+        <h4>📅 Improvement Timeline</h4>
+        <div class="timeline-grid">
+          ${Object.entries(soilCondition.additionalInfo?.improvementTimeline || {}).map(([period, action]) => `
+            <div class="timeline-item">
+              <div class="timeline-period">${period.charAt(0).toUpperCase() + period.slice(1)}</div>
+              <div class="timeline-action">${action}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      
+      <div class="detail-section">
+        <h4>💰 Investment Estimates</h4>
+        <div class="cost-estimates">
+          ${Object.entries(soilCondition.additionalInfo?.costEstimates || {}).map(([period, cost]) => `
+            <div class="cost-item">
+              <span class="cost-period">${period.charAt(0).toUpperCase() + period.slice(1)}:</span>
+              <span class="cost-amount">${cost}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+    
+    <div class="action-buttons">
+      <button class="btn btn--primary" onclick="speakSoilAnalysis('${soilCondition.id}')">
+        🔊 Hear Soil Analysis
+      </button>
+      <button class="btn btn--outline" onclick="downloadSoilReport('${soilCondition.id}')">
+        📄 Download Soil Report
+      </button>
+      <button class="btn btn--secondary" onclick="getSoilExpertAdvice('${soilCondition.id}')">
+        👨‍🌾 Soil Expert Consultation
+      </button>
+      <button class="btn btn--success" onclick="createSoilManagementPlan('${soilCondition.id}')">
+        📋 Create Management Plan
+      </button>
+    </div>
+  `;
+  
+  // Add soil analysis results to the analysis area
+  const existingComprehensive = analysisResults.querySelector('.comprehensive-results');
+  if (existingComprehensive) {
+    existingComprehensive.replaceWith(soilAnalysisResults);
+  } else {
+    analysisResults.appendChild(soilAnalysisResults);
+  }
+}
+
+function getPHCategory(pHRange) {
+  const avgPH = parseFloat(pHRange.split('-')[0]);
+  if (avgPH < 6.0) return 'acidic';
+  if (avgPH > 7.5) return 'alkaline';
+  return 'neutral';
+}
+
+function getNutrientLevel(nutrient) {
+  const level = nutrient.toLowerCase();
+  if (level.includes('high') || level.includes('good') || level.includes('adequate')) return 'high';
+  if (level.includes('medium') || level.includes('variable')) return 'medium';
+  return 'low';
+}
+
+function getNutrientPercentage(nutrient) {
+  const level = getNutrientLevel(nutrient);
+  switch(level) {
+    case 'high': return 85;
+    case 'medium': return 60;
+    case 'low': return 30;
+    default: return 50;
+  }
+}
+
+function speakSoilAnalysis(soilId) {
+  const soilCondition = appData.soilAnalysisData.find(s => s.id === soilId);
+  if (!soilCondition || !voiceAssistant) return;
+  
+  const soilAnalysisText = `
+    Complete soil analysis for ${soilCondition.name}:
+    
+    This is ${soilCondition.description.toLowerCase()}.
+    Soil category: ${soilCondition.category}.
+    Current condition: ${soilCondition.severity}.
+    
+    Key characteristics include: ${soilCondition.characteristics.slice(0, 4).join(', ')}.
+    
+    pH range is ${soilCondition.pHRange}, which is ${getPHCategory(soilCondition.pHRange)}.
+    Organic matter content: ${soilCondition.organicMatter}.
+    
+    Nutrient status: Nitrogen is ${soilCondition.nutrients.nitrogen}, 
+    Phosphorus is ${soilCondition.nutrients.phosphorus}, 
+    Potassium is ${soilCondition.nutrients.potassium}.
+    
+    Suitable crops for this soil include: ${soilCondition.suitableCrops.slice(0, 5).join(', ')}.
+    
+    Key recommendations: ${soilCondition.recommendations.slice(0, 3).join('. ')}.
+    
+    This analysis has ${Math.round(soilCondition.confidence * 100)} percent confidence level.
+  `;
+  
+  voiceAssistant.speak(soilAnalysisText);
+}
+
+function downloadSoilReport(soilId) {
+  const soilCondition = appData.soilAnalysisData.find(s => s.id === soilId);
+  if (!soilCondition) return;
+  
+  const reportContent = generateSoilReportContent(soilCondition);
+  const blob = new Blob([reportContent], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `soil_analysis_report_${soilCondition.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  
+  if (voiceAssistant) {
+    voiceAssistant.speak(`Soil analysis report for ${soilCondition.name} has been downloaded successfully.`);
+  }
+}
+
+function generateSoilReportContent(soilCondition) {
+  return `
+SOIL ANALYSIS REPORT
+====================
+Generated by pro.krishi AI Soil Analysis System
+Date: ${new Date().toLocaleDateString()}
+Time: ${new Date().toLocaleTimeString()}
+
+SOIL IDENTIFICATION
+-------------------
+Soil Condition: ${soilCondition.name}
+Soil Type: ${soilCondition.type}
+Category: ${soilCondition.category}
+Overall Status: ${soilCondition.severity}
+Confidence Score: ${Math.round(soilCondition.confidence * 100)}%
+
+SOIL DESCRIPTION
+----------------
+${soilCondition.description}
+
+SOIL CHARACTERISTICS
+--------------------
+${soilCondition.characteristics.map((char, index) => `${index + 1}. ${char}`).join('\n')}
+
+SOIL PROPERTIES
+---------------
+pH Range: ${soilCondition.pHRange}
+Organic Matter: ${soilCondition.organicMatter}
+
+NUTRIENT ANALYSIS
+-----------------
+Nitrogen (N): ${soilCondition.nutrients.nitrogen}
+Phosphorus (P): ${soilCondition.nutrients.phosphorus}
+Potassium (K): ${soilCondition.nutrients.potassium}
+Micronutrients: ${soilCondition.nutrients.micronutrients}
+
+SUITABLE CROPS
+--------------
+${soilCondition.suitableCrops.join(', ')}
+
+IMPROVEMENT RECOMMENDATIONS
+---------------------------
+${soilCondition.recommendations.map((rec, index) => `${index + 1}. ${rec}`).join('\n')}
+
+MANAGEMENT PRACTICES
+--------------------
+${soilCondition.additionalInfo?.managementPractices?.map((practice, index) => `${index + 1}. ${practice}`).join('\n') || 'Follow standard soil management practices'}
+
+IMPROVEMENT TIMELINE
+--------------------
+${Object.entries(soilCondition.additionalInfo?.improvementTimeline || {}).map(([period, action]) => `${period.toUpperCase()}: ${action}`).join('\n')}
+
+COST ESTIMATES
+--------------
+${Object.entries(soilCondition.additionalInfo?.costEstimates || {}).map(([period, cost]) => `${period.charAt(0).toUpperCase() + period.slice(1)}: ${cost}`).join('\n')}
+
+SEASONAL CONSIDERATIONS
+-----------------------
+${soilCondition.additionalInfo?.seasonalConsiderations || 'Year-round monitoring recommended'}
+
+RECOMMENDATIONS
+---------------
+1. Implement immediate soil improvement measures as outlined above
+2. Monitor soil conditions regularly throughout the growing season
+3. Follow the improvement timeline for best results
+4. Consider consulting local soil scientists for specialized advice
+5. Keep detailed records of all soil management activities
+
+DISCLAIMER
+----------
+This report is generated by AI-based soil analysis and should be used as a guide.
+For critical agricultural decisions, please consult with local soil scientists or agricultural extension officers.
+Consider conducting laboratory soil tests for precise nutrient analysis.
+
+---
+Report generated by pro.krishi
+Your Smart Farming Assistant
+`;
+}
+
+function getSoilExpertAdvice(soilId) {
+  const soilCondition = appData.soilAnalysisData.find(s => s.id === soilId);
+  if (!soilCondition) return;
+  
+  // Generate expert soil advice
+  const expertAdvice = generateSoilExpertAdvice(soilCondition);
+  showSoilExpertAdviceModal(soilCondition, expertAdvice);
+  
+  if (voiceAssistant) {
+    voiceAssistant.speak(`Soil expert consultation for ${soilCondition.name} is now available. Please review the detailed soil management recommendations.`);
+  }
+}
+
+function generateSoilExpertAdvice(soilCondition) {
+  return {
+    urgency: getSoilUrgencyLevel(soilCondition),
+    detailedSteps: getSoilDetailedSteps(soilCondition),
+    monitoring: getSoilMonitoringSchedule(soilCondition),
+    management: soilCondition.additionalInfo?.managementPractices || [],
+    alternatives: getSoilAlternativeApproaches(soilCondition),
+    costBreakdown: getSoilCostBreakdown(soilCondition)
+  };
+}
+
+function getSoilUrgencyLevel(soilCondition) {
+  if (soilCondition.severity === 'High' || soilCondition.type.includes('Problem')) {
+    return {
+      level: 'URGENT',
+      timeframe: 'Address within 2-4 weeks',
+      reason: 'Severe soil condition affecting crop productivity'
+    };
+  } else if (soilCondition.severity === 'Medium') {
+    return {
+      level: 'MODERATE',
+      timeframe: 'Plan improvements within 1-2 months',
+      reason: 'Soil condition impacts optimal crop growth'
+    };
+  } else {
+    return {
+      level: 'MAINTENANCE',
+      timeframe: 'Continue good practices',
+      reason: 'Soil condition is favorable for crop production'
+    };
+  }
+}
+
+function getSoilDetailedSteps(soilCondition) {
+  const steps = [
+    'Conduct detailed soil testing for precise analysis',
+    'Plan soil improvement strategy based on test results',
+    ...soilCondition.recommendations,
+    'Monitor soil improvement progress regularly',
+    'Adjust management practices based on results'
+  ];
+  
+  return steps;
+}
+
+function getSoilMonitoringSchedule(soilCondition) {
+  return {
+    weekly: 'Visual soil inspection and moisture check',
+    monthly: 'pH testing and organic matter assessment',
+    seasonal: 'Comprehensive soil analysis and nutrient testing',
+    annual: 'Complete soil health evaluation and management review'
+  };
+}
+
+function getSoilAlternativeApproaches(soilCondition) {
+  const alternatives = [];
+  
+  if (soilCondition.category === 'Soil Chemistry') {
+    alternatives.push('Biological pH adjustment using microbial inoculants');
+    alternatives.push('Slow-release lime application over multiple seasons');
+    alternatives.push('Green manure incorporation for gradual pH change');
+  }
+  
+  if (soilCondition.category === 'Soil Structure') {
+    alternatives.push('No-till farming to preserve soil structure');
+    alternatives.push('Cover crop integration for natural improvement');
+    alternatives.push('Biochar application for long-term soil enhancement');
+  }
+  
+  if (soilCondition.category === 'Soil Fertility') {
+    alternatives.push('Precision nutrient management');
+    alternatives.push('Integrated nutrient management (INM)');
+    alternatives.push('Foliar fertilization for quick nutrient supply');
+  }
+  
+  alternatives.push('Organic farming transition program');
+  alternatives.push('Precision agriculture technology adoption');
+  
+  return alternatives;
+}
+
+function getSoilCostBreakdown(soilCondition) {
+  const costs = soilCondition.additionalInfo?.costEstimates || {};
+  return {
+    soilTesting: '₹500 - ₹1,500 per test',
+    amendments: costs.immediate || '₹1,000 - ₹3,000 per acre',
+    equipment: '₹2,000 - ₹8,000 per acre (one-time)',
+    maintenance: costs.annual || '₹1,500 - ₹4,000 per acre annually',
+    monitoring: '₹300 - ₹800 per acre annually'
+  };
+}
+
+function showSoilExpertAdviceModal(soilCondition, advice) {
+  const modalOverlay = document.createElement('div');
+  modalOverlay.className = 'modal-overlay';
+  modalOverlay.innerHTML = `
+    <div class="expert-advice-modal soil-expert-modal">
+      <div class="modal-header">
+        <h3>🌍 Soil Expert Consultation - ${soilCondition.name}</h3>
+        <button class="modal-close" onclick="closeSoilExpertModal()">&times;</button>
+      </div>
+      
+      <div class="modal-content">
+        <div class="urgency-alert urgency-${advice.urgency.level.toLowerCase()}">
+          <strong>Priority Level: ${advice.urgency.level}</strong>
+          <p>${advice.urgency.timeframe}</p>
+          <small>${advice.urgency.reason}</small>
+        </div>
+        
+        <div class="advice-section">
+          <h4>🔧 Detailed Soil Management Steps</h4>
+          <ol class="treatment-steps">
+            ${advice.detailedSteps.map(step => `<li>${step}</li>`).join('')}
+          </ol>
+        </div>
+        
+        <div class="advice-section">
+          <h4>📅 Soil Monitoring Schedule</h4>
+          <div class="monitoring-grid">
+            ${Object.entries(advice.monitoring).map(([period, task]) => `
+              <div class="monitoring-item">
+                <strong>${period.charAt(0).toUpperCase() + period.slice(1)}:</strong> ${task}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        
+        <div class="advice-section">
+          <h4>🔄 Alternative Soil Management Approaches</h4>
+          <ul class="alternatives-list">
+            ${advice.alternatives.map(alt => `<li>${alt}</li>`).join('')}
+          </ul>
+        </div>
+        
+        <div class="advice-section">
+          <h4>💰 Detailed Cost Breakdown</h4>
+          <div class="cost-grid">
+            ${Object.entries(advice.costBreakdown).map(([item, cost]) => `
+              <div class="cost-item">
+                <strong>${item.charAt(0).toUpperCase() + item.slice(1).replace(/([A-Z])/g, ' $1')}:</strong> ${cost}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn--primary" onclick="speakSoilExpertAdvice('${soilCondition.id}')">
+          🔊 Hear Soil Expert Advice
+        </button>
+        <button class="btn btn--secondary" onclick="createSoilManagementPlan('${soilCondition.id}')">
+          📋 Create Management Plan
+        </button>
+        <button class="btn btn--outline" onclick="closeSoilExpertModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modalOverlay);
+  window.currentSoilAdvice = advice;
+  window.currentSoilId = soilCondition.id;
+}
+
+function closeSoilExpertModal() {
+  const modal = document.querySelector('.soil-expert-modal')?.parentElement;
+  if (modal) {
+    modal.remove();
+  }
+}
+
+function speakSoilExpertAdvice(soilId) {
+  const soilCondition = appData.soilAnalysisData.find(s => s.id === soilId);
+  const advice = window.currentSoilAdvice;
+  
+  if (!soilCondition || !advice || !voiceAssistant) return;
+  
+  const expertAdviceText = `
+    Soil expert consultation for ${soilCondition.name}:
+    
+    Priority level is ${advice.urgency.level}. ${advice.urgency.timeframe}.
+    
+    Key management steps include: ${advice.detailedSteps.slice(0, 4).join('. ')}.
+    
+    Monitoring schedule: ${Object.values(advice.monitoring).slice(0, 2).join('. ')}.
+    
+    Alternative approaches include: ${advice.alternatives.slice(0, 3).join('. ')}.
+    
+    Would you like more details on any specific soil management aspect?
+  `;
+  
+  voiceAssistant.speak(expertAdviceText);
+}
+
+function createSoilManagementPlan(soilId) {
+  const soilCondition = appData.soilAnalysisData.find(s => s.id === soilId);
+  if (!soilCondition) return;
+  
+  showSoilManagementPlanModal(soilCondition);
+  
+  if (voiceAssistant) {
+    voiceAssistant.speak(`Creating comprehensive soil management plan for ${soilCondition.name}. This will help you track soil improvements over time.`);
+  }
+}
+
+function showSoilManagementPlanModal(soilCondition) {
+  const planOverlay = document.createElement('div');
+  planOverlay.className = 'modal-overlay';
+  planOverlay.innerHTML = `
+    <div class="treatment-tracker-modal soil-management-modal">
+      <div class="modal-header">
+        <h3>📋 Soil Management Plan - ${soilCondition.name}</h3>
+        <button class="modal-close" onclick="closeSoilManagementPlan()">&times;</button>
+      </div>
+      
+      <div class="tracker-content">
+        <div class="treatment-timeline">
+          <h4>📅 Soil Improvement Timeline</h4>
+          <div class="timeline-items">
+            <div class="timeline-item pending">
+              <div class="timeline-date">Month 1</div>
+              <div class="timeline-action">${soilCondition.recommendations[0] || 'Begin soil testing'}</div>
+              <button class="btn btn--sm btn--success" onclick="markSoilCompleted(this)">Mark Done</button>
+            </div>
+            <div class="timeline-item pending">
+              <div class="timeline-date">Month 2-3</div>
+              <div class="timeline-action">${soilCondition.recommendations[1] || 'Apply soil amendments'}</div>
+              <button class="btn btn--sm btn--secondary" onclick="setSoilReminder(this)">Set Reminder</button>
+            </div>
+            <div class="timeline-item pending">
+              <div class="timeline-date">Month 6</div>
+              <div class="timeline-action">Monitor soil improvement progress</div>
+              <button class="btn btn--sm btn--secondary" onclick="setSoilReminder(this)">Set Reminder</button>
+            </div>
+            <div class="timeline-item pending">
+              <div class="timeline-date">Month 12</div>
+              <div class="timeline-action">Complete soil health evaluation</div>
+              <button class="btn btn--sm btn--secondary" onclick="setSoilReminder(this)">Set Reminder</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="progress-logging">
+          <h4>📊 Log Soil Management Activities</h4>
+          <div class="log-form">
+            <div class="form-group">
+              <label>Activity Performed:</label>
+              <input type="text" id="soilActivity" placeholder="e.g., Applied lime, Added compost">
+            </div>
+            <div class="form-group">
+              <label>Application Rate:</label>
+              <input type="text" id="applicationRate" placeholder="e.g., 2 tons per acre">
+            </div>
+            <div class="form-group">
+              <label>Area Covered:</label>
+              <input type="text" id="areaCovered" placeholder="e.g., 5 acres">
+            </div>
+            <div class="form-group">
+              <label>Observations/Results:</label>
+              <textarea id="soilObservations" placeholder="Note any changes in soil condition, crop response, etc..."></textarea>
+            </div>
+            <button class="btn btn--primary" onclick="logSoilActivity('${soilCondition.id}')">
+              💾 Save Activity
+            </button>
+          </div>
+        </div>
+        
+        <div class="treatment-history">
+          <h4>📋 Management History</h4>
+          <div id="soilActivityLog" class="treatment-entries">
+            <p class="no-entries">No activities logged yet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(planOverlay);
+}
+
+function closeSoilManagementPlan() {
+  const modal = document.querySelector('.soil-management-modal')?.parentElement;
+  if (modal) {
+    modal.remove();
+  }
+}
+
+function markSoilCompleted(button) {
+  const timelineItem = button.closest('.timeline-item');
+  timelineItem.classList.remove('pending');
+  timelineItem.classList.add('completed');
+  button.textContent = '✓ Completed';
+  button.disabled = true;
+  
+  if (voiceAssistant) {
+    voiceAssistant.speak('Soil management milestone marked as completed.');
+  }
+}
+
+function logSoilActivity(soilId) {
+  const activity = document.getElementById('soilActivity').value;
+  const rate = document.getElementById('applicationRate').value;
+  const area = document.getElementById('areaCovered').value;
+  const observations = document.getElementById('soilObservations').value;
+  
+  if (!activity) {
+    alert('Please enter the activity performed.');
+    return;
+  }
+  
+  const logEntry = {
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString(),
+    activity,
+    rate,
+    area,
+    observations,
+    soilId
+  };
+  
+  // Add to activity log display
+  const activityLog = document.getElementById('soilActivityLog');
+  const noEntries = activityLog.querySelector('.no-entries');
+  if (noEntries) noEntries.remove();
+  
+  const entryElement = document.createElement('div');
+  entryElement.className = 'treatment-entry';
+  entryElement.innerHTML = `
+    <div class="entry-header">
+      <strong>${logEntry.date} at ${logEntry.time}</strong>
+    </div>
+    <div class="entry-details">
+      <p><strong>Activity:</strong> ${logEntry.activity}</p>
+      ${logEntry.rate ? `<p><strong>Application Rate:</strong> ${logEntry.rate}</p>` : ''}
+      ${logEntry.area ? `<p><strong>Area:</strong> ${logEntry.area}</p>` : ''}
+      ${logEntry.observations ? `<p><strong>Observations:</strong> ${logEntry.observations}</p>` : ''}
+    </div>
+  `;
+  
+  activityLog.insertBefore(entryElement, activityLog.firstChild);
+  
+  // Clear form
+  document.getElementById('soilActivity').value = '';
+  document.getElementById('applicationRate').value = '';
+  document.getElementById('areaCovered').value = '';
+  document.getElementById('soilObservations').value = '';
+  
+  if (voiceAssistant) {
+    voiceAssistant.speak('Soil management activity logged successfully. Keep tracking your soil improvement progress.');
+  }
+}
+
+function displayDiseaseResults(disease, elements) {
+  const { diseaseType, symptoms, treatment, confidenceScore, analysisResults } = elements;
+  
+  // Update basic information
+  diseaseType.textContent = disease.name;
+  symptoms.textContent = disease.symptoms.join(', ');
+  treatment.textContent = disease.treatment;
+  confidenceScore.textContent = `${Math.round(disease.confidence * 100)}% Confidence`;
+  
+  // Create comprehensive results display
+  const comprehensiveResults = document.createElement('div');
+  comprehensiveResults.className = 'comprehensive-results';
+  comprehensiveResults.innerHTML = `
+    <div class="disease-overview">
+      <div class="disease-header">
+        <div class="disease-identity">
+          <h3>${disease.name}</h3>
+          <p class="scientific-name">${disease.scientificName || 'N/A'}</p>
+          <div class="disease-tags">
+            <span class="tag category-${disease.category?.toLowerCase()}">${disease.category}</span>
+            <span class="tag severity-${disease.severity?.toLowerCase()}">${disease.severity} Risk</span>
+            <span class="tag crop-tag">${disease.crop}</span>
+          </div>
+        </div>
+        <div class="confidence-meter">
+          <div class="confidence-circle">
+            <div class="confidence-value">${Math.round(disease.confidence * 100)}%</div>
+            <div class="confidence-label">Confidence</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="analysis-details">
+      <div class="detail-section">
+        <h4>🔬 Detailed Analysis</h4>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <strong>Affected Parts:</strong>
+            <span>${disease.affectedParts?.join(', ') || 'Various parts'}</span>
+          </div>
+          <div class="detail-item">
+            <strong>Potential Economic Loss:</strong>
+            <span class="economic-loss">${disease.economicLoss || '10-30%'}</span>
+          </div>
+          <div class="detail-item">
+            <strong>Disease Category:</strong>
+            <span>${disease.category}</span>
+          </div>
+          <div class="detail-item">
+            <strong>Primary Crop:</strong>
+            <span>${disease.crop}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="detail-section">
+        <h4>🧪 Symptoms Identified</h4>
+        <ul class="symptoms-list">
+          ${disease.symptoms.map(symptom => `<li>${symptom}</li>`).join('')}
+        </ul>
+      </div>
+      
+      <div class="detail-section">
+        <h4>🎯 Root Causes</h4>
+        <ul class="causes-list">
+          ${disease.causes?.map(cause => `<li>${cause}</li>`).join('') || '<li>Multiple environmental factors</li>'}
+        </ul>
+      </div>
+      
+      <div class="detail-section">
+        <h4>💊 Treatment Plan</h4>
+        <div class="treatment-plan">
+          <div class="immediate-action">
+            <h5>Immediate Action:</h5>
+            <p>${disease.treatment}</p>
+          </div>
+          ${disease.prevention ? `
+            <div class="prevention-measures">
+              <h5>Prevention Measures:</h5>
+              <ul>
+                ${disease.prevention.map(measure => `<li>${measure}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+      
+      <div class="detail-section">
+        <h4>📊 Risk Assessment</h4>
+        <div class="risk-indicators">
+          <div class="risk-item">
+            <span class="risk-label">Severity Level:</span>
+            <div class="risk-bar">
+              <div class="risk-fill severity-${disease.severity?.toLowerCase()}" 
+                   style="width: ${getSeverityPercentage(disease.severity)}%"></div>
+            </div>
+            <span class="risk-value">${disease.severity}</span>
+          </div>
+          <div class="risk-item">
+            <span class="risk-label">Spread Risk:</span>
+            <div class="risk-bar">
+              <div class="risk-fill spread-risk" 
+                   style="width: ${getSpreadRisk(disease.category)}%"></div>
+            </div>
+            <span class="risk-value">${getSpreadRiskLabel(disease.category)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="action-buttons">
+      <button class="btn btn--primary" onclick="speakFullDiagnosis('${disease.id}')">
+        🔊 Hear Full Diagnosis
+      </button>
+      <button class="btn btn--outline" onclick="downloadReport('${disease.id}')">
+        📄 Download Report
+      </button>
+      <button class="btn btn--secondary" onclick="getExpertAdvice('${disease.id}')">
+        👨‍🌾 Expert Consultation
+      </button>
+      <button class="btn btn--success" onclick="trackTreatment('${disease.id}')">
+        📱 Track Treatment
+      </button>
+    </div>
+  `;
+  
+  // Add comprehensive results to the analysis area
+  const existingComprehensive = analysisResults.querySelector('.comprehensive-results');
+  if (existingComprehensive) {
+    existingComprehensive.replaceWith(comprehensiveResults);
+  } else {
+    analysisResults.appendChild(comprehensiveResults);
+  }
+}
+
+function getSeverityPercentage(severity) {
+  switch(severity?.toLowerCase()) {
+    case 'low': return 25;
+    case 'medium': return 60;
+    case 'high': return 90;
+    default: return 50;
+  }
+}
+
+function getSpreadRisk(category) {
+  switch(category?.toLowerCase()) {
+    case 'viral': return 85;
+    case 'bacterial': return 75;
+    case 'fungal': return 60;
+    case 'insect pest': return 70;
+    case 'nutritional': return 20;
+    default: return 50;
+  }
+}
+
+function getSpreadRiskLabel(category) {
+  const risk = getSpreadRisk(category);
+  if (risk >= 80) return 'Very High';
+  if (risk >= 60) return 'High';
+  if (risk >= 40) return 'Medium';
+  return 'Low';
+}
+
+function generateVoiceResult(disease) {
+  return `Disease analysis complete. I have detected ${disease.name} with ${Math.round(disease.confidence * 100)}% confidence. This is a ${disease.severity?.toLowerCase()} severity ${disease.category?.toLowerCase()} disease affecting ${disease.crop}. The main symptoms include ${disease.symptoms.slice(0, 3).join(', ')}. For treatment, ${disease.treatment}. Would you like me to explain the full diagnosis?`;
+}
+
+function generateAdditionalInfo(disease) {
+  return {
+    weatherConditions: getOptimalWeatherConditions(disease),
+    seasonality: getSeasonalInfo(disease),
+    geographicalSpread: getGeographicalInfo(disease)
+  };
+}
+
+function getOptimalWeatherConditions(disease) {
+  // Based on disease characteristics
+  if (disease.category === 'Fungal') {
+    return 'High humidity (>80%), moderate temperature (20-30°C)';
+  } else if (disease.category === 'Bacterial') {
+    return 'Warm temperature (25-35°C), high moisture';
+  } else if (disease.category === 'Viral') {
+    return 'Dependent on vector insects, warm conditions';
+  }
+  return 'Various weather conditions depending on specific factors';
+}
+
+function getSeasonalInfo(disease) {
+  // Simplified seasonal information
+  if (disease.category === 'Fungal') {
+    return 'Most common during monsoon and post-monsoon seasons';
+  } else if (disease.category === 'Insect Pest') {
+    return 'Peak during warm months (March-May, September-November)';
+  }
+  return 'Can occur throughout the year under favorable conditions';
+}
+
+function getGeographicalInfo(disease) {
+  if (disease.crop === 'Rice') {
+    return 'Common in rice-growing regions: Punjab, Haryana, Andhra Pradesh, West Bengal';
+  } else if (disease.crop === 'Wheat') {
+    return 'Prevalent in wheat belt: Punjab, Haryana, Uttar Pradesh, Madhya Pradesh';
+  } else if (disease.crop === 'Cotton') {
+    return 'Major cotton states: Gujarat, Maharashtra, Telangana, Karnataka';
+  }
+  return 'Distribution varies based on crop cultivation patterns';
 }
 
 function resetUpload() {
@@ -2349,6 +4097,553 @@ function resetUpload() {
   uploadBox.querySelector('.upload-box__content').classList.remove('hidden');
   uploadPreview.classList.add('hidden');
   analysisResults.classList.add('hidden');
+  
+  // Clear comprehensive results
+  const comprehensiveResults = analysisResults.querySelector('.comprehensive-results');
+  if (comprehensiveResults) {
+    comprehensiveResults.remove();
+  }
+}
+
+// Additional Disease Detection Functions
+function speakFullDiagnosis(diseaseId) {
+  const disease = appData.diseases.find(d => d.id === diseaseId);
+  if (!disease || !voiceAssistant) return;
+  
+  const fullDiagnosis = `
+    Complete diagnosis for ${disease.name}:
+    
+    This is a ${disease.category.toLowerCase()} disease affecting ${disease.crop} plants.
+    Severity level: ${disease.severity}.
+    
+    Key symptoms include: ${disease.symptoms.join(', ')}.
+    
+    Root causes are: ${disease.causes?.join(', ') || 'environmental factors'}.
+    
+    Treatment recommendation: ${disease.treatment}
+    
+    Prevention measures include: ${disease.prevention?.join(', ') || 'general farm hygiene practices'}.
+    
+    Potential economic loss ranges from ${disease.economicLoss || '10 to 30 percent'}.
+    
+    This analysis has ${Math.round(disease.confidence * 100)} percent confidence level.
+  `;
+  
+  voiceAssistant.speak(fullDiagnosis);
+}
+
+function downloadReport(diseaseId) {
+  const disease = appData.diseases.find(d => d.id === diseaseId);
+  if (!disease) return;
+  
+  const reportContent = generateReportContent(disease);
+  const blob = new Blob([reportContent], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `disease_report_${disease.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  
+  // Voice feedback
+  if (voiceAssistant) {
+    voiceAssistant.speak(`Disease report for ${disease.name} has been downloaded successfully.`);
+  }
+}
+
+function generateReportContent(disease) {
+  return `
+DISEASE DETECTION REPORT
+========================
+Generated by pro.krishi AI Disease Detection System
+Date: ${new Date().toLocaleDateString()}
+Time: ${new Date().toLocaleTimeString()}
+
+DISEASE IDENTIFICATION
+----------------------
+Disease Name: ${disease.name}
+Scientific Name: ${disease.scientificName || 'N/A'}
+Crop Affected: ${disease.crop}
+Disease Category: ${disease.category}
+Severity Level: ${disease.severity}
+Confidence Score: ${Math.round(disease.confidence * 100)}%
+
+SYMPTOMS OBSERVED
+-----------------
+${disease.symptoms.map((symptom, index) => `${index + 1}. ${symptom}`).join('\n')}
+
+AFFECTED PLANT PARTS
+--------------------
+${disease.affectedParts?.join(', ') || 'Various parts'}
+
+ROOT CAUSES
+-----------
+${disease.causes?.map((cause, index) => `${index + 1}. ${cause}`).join('\n') || 'Multiple environmental factors'}
+
+TREATMENT RECOMMENDATIONS
+-------------------------
+Immediate Action:
+${disease.treatment}
+
+Prevention Measures:
+${disease.prevention?.map((measure, index) => `${index + 1}. ${measure}`).join('\n') || 'Follow general farm hygiene practices'}
+
+ECONOMIC IMPACT
+---------------
+Potential Loss: ${disease.economicLoss || '10-30%'}
+
+ADDITIONAL INFORMATION
+----------------------
+Weather Conditions Favoring Disease: ${disease.additionalInfo?.weatherConditions || 'Variable'}
+Seasonal Pattern: ${disease.additionalInfo?.seasonality || 'Year-round risk'}
+Geographical Distribution: ${disease.additionalInfo?.geographicalSpread || 'Varies by region'}
+
+RECOMMENDATIONS
+---------------
+1. Implement immediate treatment measures as outlined above
+2. Monitor crop regularly for spread of infection
+3. Follow prevention measures to avoid reoccurrence
+4. Consider consulting local agricultural extension officer
+5. Keep records of treatment applied and results observed
+
+DISCLAIMER
+----------
+This report is generated by AI-based analysis and should be used as a guide.
+For critical decisions, please consult with local agricultural experts or extension officers.
+
+---
+Report generated by pro.krishi
+Your Smart Farming Assistant
+`;
+}
+
+function getExpertAdvice(diseaseId) {
+  const disease = appData.diseases.find(d => d.id === diseaseId);
+  if (!disease) return;
+  
+  // Simulate expert consultation
+  const expertAdvice = generateExpertAdvice(disease);
+  
+  // Create modal or popup with expert advice
+  showExpertAdviceModal(disease, expertAdvice);
+  
+  // Voice feedback
+  if (voiceAssistant) {
+    voiceAssistant.speak(`Expert consultation for ${disease.name} is now available. Please review the detailed recommendations.`);
+  }
+}
+
+function generateExpertAdvice(disease) {
+  const advice = {
+    urgency: getUrgencyLevel(disease),
+    detailedSteps: getDetailedTreatmentSteps(disease),
+    monitoring: getMonitoringSchedule(disease),
+    followUp: getFollowUpRecommendations(disease),
+    alternativeTreatments: getAlternativeTreatments(disease),
+    costEstimate: getTreatmentCostEstimate(disease)
+  };
+  
+  return advice;
+}
+
+function getUrgencyLevel(disease) {
+  if (disease.severity === 'High') {
+    return {
+      level: 'URGENT',
+      timeframe: 'Treat within 24-48 hours',
+      reason: 'High risk of rapid spread and significant crop loss'
+    };
+  } else if (disease.severity === 'Medium') {
+    return {
+      level: 'MODERATE',
+      timeframe: 'Treat within 3-5 days',
+      reason: 'Manageable if treated promptly'
+    };
+  } else {
+    return {
+      level: 'LOW',
+      timeframe: 'Treat within 1-2 weeks',
+      reason: 'Slow progression, preventive measures sufficient'
+    };
+  }
+}
+
+function getDetailedTreatmentSteps(disease) {
+  const steps = [
+    'Isolate affected plants to prevent spread',
+    'Remove and destroy severely infected plant parts',
+    disease.treatment,
+    'Apply treatment during cooler hours (early morning or evening)',
+    'Ensure proper coverage of all plant surfaces',
+    'Maintain treatment schedule as recommended'
+  ];
+  
+  if (disease.category === 'Fungal') {
+    steps.push('Improve air circulation around plants');
+    steps.push('Reduce humidity if possible');
+  } else if (disease.category === 'Bacterial') {
+    steps.push('Avoid overhead watering');
+    steps.push('Disinfect tools between plants');
+  } else if (disease.category === 'Viral') {
+    steps.push('Control vector insects');
+    steps.push('Remove infected plants completely');
+  }
+  
+  return steps;
+}
+
+function getMonitoringSchedule(disease) {
+  return {
+    daily: 'Check for new symptoms and spread',
+    weekly: 'Assess treatment effectiveness',
+    monthly: 'Evaluate overall crop health',
+    seasonal: 'Plan prevention for next season'
+  };
+}
+
+function getFollowUpRecommendations(disease) {
+  return [
+    'Document treatment response with photos',
+    'Keep records of all applications',
+    'Monitor weather conditions',
+    'Prepare for potential re-treatment',
+    'Plan crop rotation if necessary',
+    'Consider resistant varieties for next planting'
+  ];
+}
+
+function getAlternativeTreatments(disease) {
+  const alternatives = [];
+  
+  if (disease.category === 'Fungal') {
+    alternatives.push('Organic neem oil treatment');
+    alternatives.push('Baking soda spray (1 tsp per liter)');
+    alternatives.push('Copper sulfate solution');
+  } else if (disease.category === 'Bacterial') {
+    alternatives.push('Copper-based bactericides');
+    alternatives.push('Streptomycin spray');
+    alternatives.push('Hot water treatment for seeds');
+  } else if (disease.category === 'Insect Pest') {
+    alternatives.push('Biological control agents');
+    alternatives.push('Neem-based insecticides');
+    alternatives.push('Pheromone traps');
+  }
+  
+  alternatives.push('Integrated Pest Management (IPM) approach');
+  alternatives.push('Organic farming methods');
+  
+  return alternatives;
+}
+
+function getTreatmentCostEstimate(disease) {
+  // Simplified cost estimation
+  let baseCost = 500; // Base cost in INR per acre
+  
+  if (disease.severity === 'High') baseCost *= 2;
+  if (disease.category === 'Viral') baseCost *= 1.5; // More expensive to manage
+  
+  return {
+    chemical: `₹${baseCost} - ₹${baseCost * 1.5} per acre`,
+    organic: `₹${baseCost * 0.7} - ₹${baseCost * 1.2} per acre`,
+    biological: `₹${baseCost * 1.2} - ₹${baseCost * 2} per acre`
+  };
+}
+
+function showExpertAdviceModal(disease, advice) {
+  // Create modal overlay
+  const modalOverlay = document.createElement('div');
+  modalOverlay.className = 'modal-overlay';
+  modalOverlay.innerHTML = `
+    <div class="expert-advice-modal">
+      <div class="modal-header">
+        <h3>🧑‍🔬 Expert Consultation - ${disease.name}</h3>
+        <button class="modal-close" onclick="closeExpertModal()">&times;</button>
+      </div>
+      
+      <div class="modal-content">
+        <div class="urgency-alert urgency-${advice.urgency.level.toLowerCase()}">
+          <strong>Urgency Level: ${advice.urgency.level}</strong>
+          <p>${advice.urgency.timeframe}</p>
+          <small>${advice.urgency.reason}</small>
+        </div>
+        
+        <div class="advice-section">
+          <h4>🔧 Detailed Treatment Steps</h4>
+          <ol class="treatment-steps">
+            ${advice.detailedSteps.map(step => `<li>${step}</li>`).join('')}
+          </ol>
+        </div>
+        
+        <div class="advice-section">
+          <h4>📅 Monitoring Schedule</h4>
+          <div class="monitoring-grid">
+            <div class="monitoring-item">
+              <strong>Daily:</strong> ${advice.monitoring.daily}
+            </div>
+            <div class="monitoring-item">
+              <strong>Weekly:</strong> ${advice.monitoring.weekly}
+            </div>
+            <div class="monitoring-item">
+              <strong>Monthly:</strong> ${advice.monitoring.monthly}
+            </div>
+            <div class="monitoring-item">
+              <strong>Seasonal:</strong> ${advice.monitoring.seasonal}
+            </div>
+          </div>
+        </div>
+        
+        <div class="advice-section">
+          <h4>🔄 Alternative Treatments</h4>
+          <ul class="alternatives-list">
+            ${advice.alternativeTreatments.map(alt => `<li>${alt}</li>`).join('')}
+          </ul>
+        </div>
+        
+        <div class="advice-section">
+          <h4>💰 Cost Estimates (per acre)</h4>
+          <div class="cost-grid">
+            <div class="cost-item">
+              <strong>Chemical:</strong> ${advice.costEstimate.chemical}
+            </div>
+            <div class="cost-item">
+              <strong>Organic:</strong> ${advice.costEstimate.organic}
+            </div>
+            <div class="cost-item">
+              <strong>Biological:</strong> ${advice.costEstimate.biological}
+            </div>
+          </div>
+        </div>
+        
+        <div class="advice-section">
+          <h4>📋 Follow-up Recommendations</h4>
+          <ul class="followup-list">
+            ${advice.followUp.map(item => `<li>${item}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn--primary" onclick="speakExpertAdvice('${disease.id}')">
+          🔊 Hear Expert Advice
+        </button>
+        <button class="btn btn--secondary" onclick="scheduleReminder('${disease.id}')">
+          ⏰ Set Reminders
+        </button>
+        <button class="btn btn--outline" onclick="closeExpertModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modalOverlay);
+  
+  // Store advice data for later use
+  window.currentExpertAdvice = advice;
+  window.currentDiseaseId = disease.id;
+}
+
+function closeExpertModal() {
+  const modal = document.querySelector('.modal-overlay');
+  if (modal) {
+    modal.remove();
+  }
+}
+
+function speakExpertAdvice(diseaseId) {
+  const disease = appData.diseases.find(d => d.id === diseaseId);
+  const advice = window.currentExpertAdvice;
+  
+  if (!disease || !advice || !voiceAssistant) return;
+  
+  const expertAdviceText = `
+    Expert consultation for ${disease.name}:
+    
+    Urgency level is ${advice.urgency.level}. ${advice.urgency.timeframe}.
+    
+    Treatment steps: ${advice.detailedSteps.slice(0, 5).join('. ')}.
+    
+    Cost estimates: Chemical treatment ranges from ${advice.costEstimate.chemical}, 
+    organic treatment costs ${advice.costEstimate.organic}.
+    
+    Key monitoring points: Check daily for new symptoms, assess weekly for treatment effectiveness.
+    
+    Would you like more details on any specific aspect?
+  `;
+  
+  voiceAssistant.speak(expertAdviceText);
+}
+
+function trackTreatment(diseaseId) {
+  const disease = appData.diseases.find(d => d.id === diseaseId);
+  if (!disease) return;
+  
+  // Create treatment tracking interface
+  showTreatmentTracker(disease);
+  
+  if (voiceAssistant) {
+    voiceAssistant.speak(`Treatment tracker for ${disease.name} is now active. You can record progress and schedule follow-ups.`);
+  }
+}
+
+function showTreatmentTracker(disease) {
+  // Create treatment tracking modal
+  const trackerOverlay = document.createElement('div');
+  trackerOverlay.className = 'modal-overlay';
+  trackerOverlay.innerHTML = `
+    <div class="treatment-tracker-modal">
+      <div class="modal-header">
+        <h3>📱 Treatment Tracker - ${disease.name}</h3>
+        <button class="modal-close" onclick="closeTreatmentTracker()">&times;</button>
+      </div>
+      
+      <div class="tracker-content">
+        <div class="treatment-timeline">
+          <h4>📅 Treatment Schedule</h4>
+          <div class="timeline-items">
+            <div class="timeline-item pending">
+              <div class="timeline-date">Day 1 (Today)</div>
+              <div class="timeline-action">Initial treatment application</div>
+              <button class="btn btn--sm btn--success" onclick="markCompleted(this)">Mark Done</button>
+            </div>
+            <div class="timeline-item pending">
+              <div class="timeline-date">Day 3</div>
+              <div class="timeline-action">Monitor for improvement</div>
+              <button class="btn btn--sm btn--secondary" onclick="setReminder(this)">Set Reminder</button>
+            </div>
+            <div class="timeline-item pending">
+              <div class="timeline-date">Day 7</div>
+              <div class="timeline-action">Second treatment if needed</div>
+              <button class="btn btn--sm btn--secondary" onclick="setReminder(this)">Set Reminder</button>
+            </div>
+            <div class="timeline-item pending">
+              <div class="timeline-date">Day 14</div>
+              <div class="timeline-action">Assess treatment effectiveness</div>
+              <button class="btn btn--sm btn--secondary" onclick="setReminder(this)">Set Reminder</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="progress-logging">
+          <h4>📊 Log Progress</h4>
+          <div class="log-form">
+            <div class="form-group">
+              <label>Treatment Applied:</label>
+              <input type="text" id="treatmentApplied" placeholder="e.g., Fungicide spray">
+            </div>
+            <div class="form-group">
+              <label>Dosage/Amount:</label>
+              <input type="text" id="dosageAmount" placeholder="e.g., 2ml per liter">
+            </div>
+            <div class="form-group">
+              <label>Area Treated:</label>
+              <input type="text" id="areaTreated" placeholder="e.g., 1 acre">
+            </div>
+            <div class="form-group">
+              <label>Observations:</label>
+              <textarea id="observations" placeholder="Note any changes, improvements, or concerns..."></textarea>
+            </div>
+            <button class="btn btn--primary" onclick="logTreatment('${disease.id}')">
+              💾 Save Entry
+            </button>
+          </div>
+        </div>
+        
+        <div class="treatment-history">
+          <h4>📋 Treatment History</h4>
+          <div id="treatmentLog" class="treatment-entries">
+            <p class="no-entries">No treatments logged yet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(trackerOverlay);
+}
+
+function closeTreatmentTracker() {
+  const modal = document.querySelector('.treatment-tracker-modal')?.parentElement;
+  if (modal) {
+    modal.remove();
+  }
+}
+
+function markCompleted(button) {
+  const timelineItem = button.closest('.timeline-item');
+  timelineItem.classList.remove('pending');
+  timelineItem.classList.add('completed');
+  button.textContent = '✓ Completed';
+  button.disabled = true;
+  
+  if (voiceAssistant) {
+    voiceAssistant.speak('Treatment milestone marked as completed.');
+  }
+}
+
+function logTreatment(diseaseId) {
+  const treatment = document.getElementById('treatmentApplied').value;
+  const dosage = document.getElementById('dosageAmount').value;
+  const area = document.getElementById('areaTreated').value;
+  const observations = document.getElementById('observations').value;
+  
+  if (!treatment) {
+    alert('Please enter the treatment applied.');
+    return;
+  }
+  
+  const logEntry = {
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString(),
+    treatment,
+    dosage,
+    area,
+    observations,
+    diseaseId
+  };
+  
+  // Add to treatment log display
+  const treatmentLog = document.getElementById('treatmentLog');
+  const noEntries = treatmentLog.querySelector('.no-entries');
+  if (noEntries) noEntries.remove();
+  
+  const entryElement = document.createElement('div');
+  entryElement.className = 'treatment-entry';
+  entryElement.innerHTML = `
+    <div class="entry-header">
+      <strong>${logEntry.date} at ${logEntry.time}</strong>
+    </div>
+    <div class="entry-details">
+      <p><strong>Treatment:</strong> ${logEntry.treatment}</p>
+      ${logEntry.dosage ? `<p><strong>Dosage:</strong> ${logEntry.dosage}</p>` : ''}
+      ${logEntry.area ? `<p><strong>Area:</strong> ${logEntry.area}</p>` : ''}
+      ${logEntry.observations ? `<p><strong>Notes:</strong> ${logEntry.observations}</p>` : ''}
+    </div>
+  `;
+  
+  treatmentLog.insertBefore(entryElement, treatmentLog.firstChild);
+  
+  // Clear form
+  document.getElementById('treatmentApplied').value = '';
+  document.getElementById('dosageAmount').value = '';
+  document.getElementById('areaTreated').value = '';
+  document.getElementById('observations').value = '';
+  
+  if (voiceAssistant) {
+    voiceAssistant.speak('Treatment entry saved successfully. Keep monitoring your crop progress.');
+  }
+}
+
+function scheduleReminder(diseaseId) {
+  if (voiceAssistant) {
+    voiceAssistant.speak('Reminder scheduling feature will notify you about follow-up treatments and monitoring schedules.');
+  }
+  
+  // This would integrate with device notifications in a real app
+  alert('Reminders set! You will be notified about upcoming monitoring and treatment schedules.');
 }
 
 // Crop Advisory functionality
