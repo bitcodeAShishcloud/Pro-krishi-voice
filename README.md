@@ -2,6 +2,8 @@
 
 ![pro.krishi Banner](https://img.shields.io/badge/pro.krishi-Smart%20Farming-green?style=for-the-badge&logo=leaf)
 
+🌐 **Live Demo**: [https://bitcodeashishcloud.github.io/Pro-krishi-voice/](https://bitcodeashishcloud.github.io/Pro-krishi-voice/)
+
 ## 📋 Overview
 
 **pro.krishi** is an advanced AI-powered agricultural voice assistant designed to revolutionize farming practices through intelligent crop management, disease detection, soil analysis, and comprehensive agricultural guidance. Built with cutting-edge web technologies and voice recognition capabilities.
@@ -339,5 +341,3 @@ If you find pro.krishi helpful, please ⭐ star this repository and share it wit
 ---
 
 > **Note**: This is an open-source project aimed at supporting sustainable agriculture through technology. We encourage community contributions and feedback to make farming smarter and more efficient.
-
-
