@@ -1,6 +1,6 @@
 # 🌾 pro.krishi - Smart Agricultural Voice Assistant
 
-![pro.krishi Banner](https://bitcodeashishcloud.github.io/Pro-krishi-voice/)
+![pro.krishi Banner]([https://bitcodeashishcloud.github.io/Pro-krishi-voice/](https://img.shields.io/badge/pro.krishi-Smart%20Farming-green?style=for-the-badge&logo=leaf))
 
 ## 📋 Overview
 
