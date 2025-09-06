@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" co                        <div class="kishan-avatar-voice" style="display:flex;align-items:center;gap:32px;margin:32px 0;padding:32px;background:linear-gradient(135deg, rgba(240,249,255,0.9) 0%, rgba(224,242,254,0.9) 100%);border-radius:20px;border:2px solid #21808d;backdrop-filter: blur(10px);box-shadow: 0 20px 40px rgba(33,128,141,0.2);">,t                                <div class="static-elements">
+                                    <div class="static-icon" style="position:absolute;top:-10px;right:-10px;font-size:24px;">🌾</div>
+                                    <div class="static-icon" style="position:absolute;bottom:-10px;left:-10px;font-size:20px;">🚜</div>
+                                    <div class="static-icon" style="position:absolute;top:50%;left:-15px;font-size:18px;">📱</div>
+                                </div>width=device-width, initial-scale=1.0">
+    <title>pro.krishi - Smart Farming Made Simple</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header__content">
+                <div class="header__logo">
+                    <h1>🌾 pro.krishi</h1>
+                    <span class="header__tagline">Smart Farming Made Simple</span>
+                </div>
+                
+                <div class="header__actions">
+                    <select id="languageSelector" class="language-selector form-control">
+                        <option value="en-IN">English (India)</option>
+                        <option value="hi-IN">हिन्दी</option>
+                        <option value="bn-IN">বাংলা</option>
+                        <option value="mr-IN">मराठी</option>
+                        <option value="te-IN">తెలుగు</option>
+                        <option value="ta-IN">தமிழ்</option>
+                        <option value="gu-IN">ગુજરાતી</option>
+                        <option value="kn-IN">ಕನ್ನಡ</option>
+                        <option value="ml-IN">മലയാളം</option>
+                        <option value="pa-IN">ਪੰਜਾਬੀ</option>
+                    </select>
+                </div>
+            </div>
+            
+            <nav class="navigation">
+                <button class="nav-btn" data-section="home" data-key="nav_home">Home</button>
+                <button class="nav-btn" data-section="disease-detection" data-key="nav_disease">Disease Detection</button>
+                <button class="nav-btn" data-section="crop-advisory" data-key="nav_crop">Crop Advisory</button>
+                <button class="nav-btn" data-section="smart-farming" data-key="nav_smart">Smart Farming</button>
+                <button class="nav-btn" data-section="marketplace" data-key="nav_marketplace">Marketplace</button>
+                <button class="nav-btn" data-section="chat" data-key="nav_chat">AI Chat Assistant</button>
+                <button class="nav-btn" data-section="about" data-key="nav_about">About</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <!-- Background Canvas -->
+            <canvas id="threejs-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;"></canvas>
+            
+            <div class="hero">
+                <div class="container">
+                    <div class="hero__content">
+                        <!-- Modern Avatar -->
+                        <div class="modern-avatar-container">
+                            <div class="avatar-wrapper">
+                                <div class="avatar-main">
+                                    <div class="avatar-bg-circle"></div>
+                                    <div class="avatar-character">
+                                        <div class="character-head">
+                                            <div class="face">
+                                                <div class="eyes">
+                                                    <div class="eye"></div>
+                                                    <div class="eye"></div>
+                                                </div>
+                                                <div class="mouth"></div>
+                                            </div>
+                                        </div>
+                                        <div class="character-body">
+                                            <div class="shirt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-icons">
+                                        <span class="icon">�</span>
+                                        <span class="icon">🚜</span>
+                                        <span class="icon">📱</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hero-info">
+                                <h1 class="main-title">pro.krishi</h1>
+                                <h2 class="subtitle">Your Smart Farming Guide</h2>
+                                <p class="tagline">AI-Powered Agriculture Solutions</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Enhanced Kishan Avatar -->
+                        <div class="kishan-avatar-voice-3d" style="display:flex;align-items:center;gap:32px;margin:32px 0;padding:32px;background:linear-gradient(135deg, rgba(240,249,255,0.9) 0%, rgba(224,242,254,0.9) 100%);border-radius:20px;border:2px solid #21808d;backdrop-filter: blur(10px);box-shadow: 0 20px 40px rgba(33,128,141,0.2);">
+                            <div class="kishan-avatar" style="position: relative; width:160px;height:160px;border-radius:50%;background:linear-gradient(135deg, #21808d 0%, #2dd4bf 100%);border:6px solid #ffffff;display:flex;align-items:center;justify-content:center;box-shadow:0 15px 50px rgba(33,128,141,0.4);overflow:hidden;">
+                                <!-- Avatar Container -->
+                                <div id="avatar-container" style="width:140px;height:140px;border-radius:50%;position:relative;"></div>
+                                
+                                <!-- Static Elements -->
+                                <div class="floating-elements-3d">
+                                    <div class="floating-icon" style="position:absolute;top:-10px;right:-10px;font-size:24px;animation:float3d 3s ease-in-out infinite;">🌾</div>
+                                    <div class="floating-icon" style="position:absolute;bottom:-10px;left:-10px;font-size:20px;animation:float3d 4s ease-in-out infinite reverse;">🚜</div>
+                                    <div class="floating-icon" style="position:absolute;top:50%;left:-15px;font-size:18px;animation:float3d 3.5s ease-in-out infinite;">�</div>
+                                </div>
+                                
+                                <!-- Static Rings -->
+                                <div class="static-ring" style="position:absolute;top:0;left:0;right:0;bottom:0;border-radius:50%;border:2px solid rgba(33,128,141,0.3);"></div>
+                                <div class="static-ring" style="position:absolute;top:5px;left:5px;right:5px;bottom:5px;border-radius:50%;border:2px solid rgba(33,128,141,0.2);"></div>
+                            </div>
+                            
+                            <div class="kishan-voice-panel" style="flex:1;">
+                                <div style="font-size:1.6em;font-weight:700;margin-bottom:12px;background:linear-gradient(45deg, #21808d, #2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+                                    👨‍🌾 Kishan 
+                                    <span style="font-size:0.6em;font-weight:400;color:#21808d;display:block;background:none;-webkit-text-fill-color:initial;" data-key="kishan_role">Your Smart Farming Guide</span>
+                                </div>
+                                <div id="kishanWelcome" style="margin:16px 0 24px 0;padding:20px;background:linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,248,255,0.95) 100%);border-radius:16px;border-left:6px solid #21808d;font-size:1.1rem;line-height:1.6;transition:all 0.3s ease;box-shadow:0 8px 32px rgba(0,0,0,0.1);color:#1e3a3a;font-weight:500;">
+                                    Hello! I'm Kishan, your smart farming guide. I can tell you about all the features of pro.krishi with advanced visualization. Feel free to ask me anything!
+                                </div>
+                                <div style="display:flex;gap:16px;align-items:center;margin-bottom:16px;">
+                                    <button id="kishanMicBtn" class="btn-3d btn--primary" style="display:flex;align-items:center;gap:10px;padding:16px 24px;border-radius:12px;background:linear-gradient(135deg, #21808d 0%, #2dd4bf 100%);color:white;font-weight:600;border:none;box-shadow:0 8px 24px rgba(33,128,141,0.3);transform:perspective(1000px) rotateX(0deg);transition:all 0.3s ease;" title="Talk to Kishan in 3D">
+                                        <span class="btn-icon">🎤</span> 
+                                        <span data-key="talk_to_kishan">Talk to Kishan 3D</span>
+                                    </button>
+                                    <button id="kishanSpeakBtn" class="btn-3d btn--outline" style="display:flex;align-items:center;gap:10px;padding:16px 20px;border-radius:12px;background:white;color:#21808d;font-weight:600;border:2px solid #21808d;box-shadow:0 4px 16px rgba(0,0,0,0.1);transform:perspective(1000px) rotateX(0deg);transition:all 0.3s ease;" title="Kishan speaks in 3D" data-key="speak_response">
+                                        🔊 <span>Speak 3D</span>
+                                    </button>
+                                    <button id="toggle3DMode" class="btn-3d btn--secondary" style="padding:16px 20px;border-radius:12px;background:linear-gradient(135deg, #64748b 0%, #94a3b8 100%);color:white;font-weight:600;border:none;box-shadow:0 4px 16px rgba(0,0,0,0.1);">
+                                        🌐 3D Mode
+                                    </button>
+                                </div>
+                                <div class="quick-ask-buttons-3d" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                                    <button class="quick-ask-btn-3d" data-question="features" style="background:linear-gradient(45deg, #e0f2fe, #b3e5fc);border:2px solid #21808d;color:#21808d;padding:10px 16px;border-radius:25px;font-size:0.9em;cursor:pointer;box-shadow:0 4px 12px rgba(33,128,141,0.2);transform:perspective(500px) rotateX(0deg);transition:all 0.3s ease;">3D Features</button>
+                                    <button class="quick-ask-btn-3d" data-question="disease" style="background:linear-gradient(45deg, #e0f2fe, #b3e5fc);border:2px solid #21808d;color:#21808d;padding:10px 16px;border-radius:25px;font-size:0.9em;cursor:pointer;box-shadow:0 4px 12px rgba(33,128,141,0.2);transform:perspective(500px) rotateX(0deg);transition:all 0.3s ease;">3D Disease Scan</button>
+                                    <button class="quick-ask-btn-3d" data-question="voice" style="background:linear-gradient(45deg, #e0f2fe, #b3e5fc);border:2px solid #21808d;color:#21808d;padding:10px 16px;border-radius:25px;font-size:0.9em;cursor:pointer;box-shadow:0 4px 12px rgba(33,128,141,0.2);transform:perspective(500px) rotateX(0deg);transition:all 0.3s ease;">3D Voice AI</button>
+                                    <button class="quick-ask-btn-3d" data-question="prices" style="background:linear-gradient(45deg, #e0f2fe, #b3e5fc);border:2px solid #21808d;color:#21808d;padding:10px 16px;border-radius:25px;font-size:0.9em;cursor:pointer;box-shadow:0 4px 12px rgba(33,128,141,0.2);transform:perspective(500px) rotateX(0deg);transition:all 0.3s ease;">3D Market</button>
+                                </div>
+                                <div id="kishanVoiceStatus" style="font-size:1rem;color:#21808d;min-height:24px;font-style:italic;font-weight:500;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="hero__stats-3d" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;margin:40px 0;">
+                            <div class="stat-card-3d" style="background:linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,249,255,0.9));padding:24px;border-radius:16px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,0.1);backdrop-filter:blur(10px);border:1px solid rgba(33,128,141,0.2);transform:perspective(1000px) rotateX(5deg) rotateY(-5deg);transition:all 0.3s ease;">
+                                <div class="stat-card__number-3d" style="font-size:2.5rem;font-weight:700;background:linear-gradient(45deg, #21808d, #2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">95%</div>
+                                <div class="stat-card__label-3d" style="color:#21808d;font-weight:600;" data-key="stat_accuracy">3D Detection Accuracy</div>
+                            </div>
+                            <div class="stat-card-3d" style="background:linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,249,255,0.9));padding:24px;border-radius:16px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,0.1);backdrop-filter:blur(10px);border:1px solid rgba(33,128,141,0.2);transform:perspective(1000px) rotateX(5deg) rotateY(0deg);transition:all 0.3s ease;">
+                                <div class="stat-card__number-3d" style="font-size:2.5rem;font-weight:700;background:linear-gradient(45deg, #21808d, #2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">24/7</div>
+                                <div class="stat-card__label-3d" style="color:#21808d;font-weight:600;" data-key="stat_monitoring">3D Voice Assistant</div>
+                            </div>
+                            <div class="stat-card-3d" style="background:linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240,249,255,0.9));padding:24px;border-radius:16px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,0.1);backdrop-filter:blur(10px);border:1px solid rgba(33,128,141,0.2);transform:perspective(1000px) rotateX(5deg) rotateY(5deg);transition:all 0.3s ease;">
+                                <div class="stat-card__number-3d" style="font-size:2.5rem;font-weight:700;background:linear-gradient(45deg, #21808d, #2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">10+</div>
+                                <div class="stat-card__label-3d" style="color:#21808d;font-weight:600;" data-key="stat_languages">Indian Languages in 3D</div>
+                            </div>
+                        </div>
+                        
+                        <div class="hero__actions-3d" style="display:flex;gap:20px;justify-content:center;margin-top:40px;">
+                            <button class="btn-3d btn--primary btn--lg" data-section="chat" style="padding:20px 32px;border-radius:16px;font-size:1.2rem;box-shadow:0 12px 32px rgba(33,128,141,0.4);transform:perspective(1000px) rotateX(-5deg);transition:all 0.3s ease;" data-key="cta_voice_chat">Try 3D Voice Assistant</button>
+                            <button class="btn-3d btn--outline btn--lg" data-section="disease-detection" style="padding:20px 32px;border-radius:16px;font-size:1.2rem;box-shadow:0 8px 24px rgba(0,0,0,0.1);transform:perspective(1000px) rotateX(-5deg);transition:all 0.3s ease;" data-key="cta_detection">Start 3D Disease Detection</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="features">
+                <div class="container">
+                    <h3 data-key="features_title">AI-Powered Farming Assistant</h3>
+                    <div class="features__grid">
+                        <div class="feature-card">
+                            <div class="feature-card__icon">🎤</div>
+                            <h4 data-key="feature_voice_title">Voice Assistant</h4>
+                            <p data-key="feature_voice_desc">Talk to our AI in your preferred Indian language</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-card__icon">🔍</div>
+                            <h4 data-key="feature_ai_title">AI Disease Detection</h4>
+                            <p data-key="feature_ai_desc">Upload plant photos for instant disease diagnosis</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-card__icon">📊</div>
+                            <h4 data-key="feature_market_title">Market Prices</h4>
+                            <p data-key="feature_market_desc">Real-time crop prices and forecasts</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-card__icon">🌱</div>
+                            <h4 data-key="feature_smart_title">Smart Farming Plans</h4>
+                            <p data-key="feature_smart_desc">Voice-guided farming strategies for your land</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Disease Detection Section -->
+        <section id="disease-detection" class="section">
+            <div class="container">
+                <h2 data-key="disease_title">Disease Detection</h2>
+                <div class="disease-detection__content">
+                    <div class="upload-area">
+                        <div class="upload-box" id="uploadBox">
+                            <div class="upload-box__content">
+                                <div class="upload-box__icon">📷</div>
+                                <h3 data-key="upload_title">Upload Plant Image</h3>
+                                <p data-key="upload_desc">Drag and drop or click to select</p>
+                                <input type="file" id="fileInput" accept="image/*" class="hidden">
+                                <button class="btn btn--primary" id="uploadBtn" data-key="upload_btn">Choose File</button>
+                            </div>
+                            <div class="upload-preview hidden" id="uploadPreview">
+                                <img id="previewImage" src="" alt="Preview">
+                                <div class="preview-actions">
+                                    <button class="btn btn--primary" id="analyzeBtn" data-key="analyze_btn">Analyze Disease</button>
+                                    <button class="btn btn--outline" id="resetBtn" data-key="reset_btn">Upload Another</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="system-status">
+                        <h3 data-key="system_status">System Status</h3>
+                        <div class="status-indicators">
+                            <div class="status-item">
+                                <span class="status status--success" data-key="ai_model_loaded">AI Model Loaded</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status status--success" data-key="api_connected">API Connected</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status status--success" data-key="voice_ready">Voice Ready</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-results hidden" id="analysisResults">
+                        <h3 data-key="analysis_results">Analysis Results</h3>
+                        <div class="result-card">
+                            <div class="result-header">
+                                <h4 id="diseaseType">Disease Detected</h4>
+                                <span class="confidence" id="confidenceScore">95% Confidence</span>
+                            </div>
+                            <div class="result-body">
+                                <p><strong data-key="symptoms_label">Symptoms:</strong> <span id="symptoms"></span></p>
+                                <p><strong data-key="treatment_label">Recommended Treatment:</strong> <span id="treatment"></span></p>
+                                <div class="result-actions">
+                                    <button class="btn btn--primary" id="speakResultBtn" data-key="hear_result">🔊 Hear Result</button>
+                                    <button class="btn btn--outline" data-key="save_result">Save Result</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Crop Advisory Section -->
+        <section id="crop-advisory" class="section">
+            <div class="container">
+                <h2 data-key="crop_advisory_title">Crop Advisory</h2>
+                <div class="advisory-content">
+                    <div class="location-selector">
+                        <div class="form-group">
+                            <label class="form-label" data-key="select_state">Select State</label>
+                            <select id="stateSelector" class="form-control">
+                                <option value="" data-key="choose_state">Choose your state...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-key="select_crop">Select Crop</label>
+                            <select id="cropSelector" class="form-control">
+                                <option value="" data-key="choose_crop">Choose your crop...</option>
+                            </select>
+                        </div>
+                        <button class="btn btn--primary" id="getAdvisoryBtn" data-key="get_advisory">Get Advisory</button>
+                    </div>
+                    
+                    <div class="market-data" id="marketData">
+                        <div class="market-cards">
+                            <div class="market-card">
+                                <h4 data-key="current_price">Current Price</h4>
+                                <div class="price-display">
+                                    <span class="price" id="currentPrice">₹2,850</span>
+                                    <span class="unit">/quintal</span>
+                                </div>
+                                <span class="price-change positive" id="priceChange">+5.2%</span>
+                            </div>
+                            
+                            <div class="market-card">
+                                <h4 data-key="forecast_price">7-Day Forecast</h4>
+                                <div class="forecast-chart">
+                                    <div class="chart-placeholder">📈</div>
+                                    <span class="trend positive" data-key="trend_up">Trending Up</span>
+                                </div>
+                            </div>
+                            
+                            <div class="market-card">
+                                <h4 data-key="quality_metrics">Quality Metrics</h4>
+                                <div class="quality-indicators">
+                                    <div class="quality-item">
+                                        <span data-key="moisture">Moisture:</span>
+                                        <span class="quality-value">12.5%</span>
+                                    </div>
+                                    <div class="quality-item">
+                                        <span data-key="purity">Purity:</span>
+                                        <span class="quality-value">98.2%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Smart Farming Section -->
+        <section id="smart-farming" class="section">
+            <div class="container">
+                <h2 data-key="smart_farming_title">Smart Farming Plans</h2>
+                <div class="farming-selector">
+                    <h3 data-key="select_farm_scale">Select Your Farm Scale</h3>
+                    <div class="scale-options">
+                        <div class="scale-card" data-scale="small">
+                            <h4 data-key="small_scale">Small Scale</h4>
+                            <p data-key="small_scale_desc">< ₹5 Lakh Investment</p>
+                            <div class="scale-features">
+                                <span>0.5-2 Acres</span>
+                                <span>Family Farming</span>
+                                <span>Basic Equipment</span>
+                            </div>
+                        </div>
+                        <div class="scale-card" data-scale="medium">
+                            <h4 data-key="medium_scale">Medium Scale</h4>
+                            <p data-key="medium_scale_desc">₹5-20 Lakh Investment</p>
+                            <div class="scale-features">
+                                <span>2-10 Acres</span>
+                                <span>Commercial Farming</span>
+                                <span>Modern Equipment</span>
+                            </div>
+                        </div>
+                        <div class="scale-card" data-scale="large">
+                            <h4 data-key="large_scale">Large Scale</h4>
+                            <p data-key="large_scale_desc">> ₹20 Lakh Investment</p>
+                            <div class="scale-features">
+                                <span>10+ Acres</span>
+                                <span>Industrial Farming</span>
+                                <span>Advanced Technology</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="farming-techniques" id="farmingTechniques">
+                    <h3 data-key="available_techniques">Available Techniques</h3>
+                    <div class="technique-cards">
+                        <div class="technique-card">
+                            <div class="technique-header">
+                                <h4>Organic Farming</h4>
+                                <span class="success-rate">85% Success Rate</span>
+                            </div>
+                            <div class="technique-details">
+                                <div class="detail-item">
+                                    <span data-key="investment">Investment:</span>
+                                    <span class="value">₹25,000</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span data-key="roi">ROI:</span>
+                                    <span class="value">18.5%</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span data-key="time_to_roi">Time to ROI:</span>
+                                    <span class="value">2 years</span>
+                                </div>
+                            </div>
+                            <button class="btn btn--primary btn--full-width" data-key="get_plan">Get Implementation Plan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Marketplace Section -->
+        <section id="marketplace" class="section">
+            <div class="container">
+                <h2 data-key="marketplace_title">Equipment Marketplace</h2>
+                <div class="marketplace-filters">
+                    <div class="filter-group">
+                        <select id="categoryFilter" class="form-control">
+                            <option value="" data-key="all_categories">All Categories</option>
+                            <option value="Heavy Equipment" data-key="heavy_equipment">Heavy Equipment</option>
+                            <option value="Technology" data-key="technology">Technology</option>
+                            <option value="Chemicals" data-key="chemicals">Chemicals</option>
+                            <option value="Tools" data-key="tools">Tools</option>
+                            <option value="Seeds" data-key="seeds">Seeds</option>
+                            <option value="Irrigation" data-key="irrigation">Irrigation</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select id="sortFilter" class="form-control">
+                            <option value="rating" data-key="top_rated">Top Rated</option>
+                            <option value="price" data-key="price_low_high">Price: Low to High</option>
+                            <option value="newest" data-key="newest">Newest</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="marketplace-grid" id="marketplaceGrid">
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-badge free" data-key="free_badge">FREE</div>
+                            <div class="product-rating">
+                                <span>⭐ 4.9</span>
+                            </div>
+                        </div>
+                        <div class="product-image">
+                            <div class="image-placeholder">🚁</div>
+                        </div>
+                        <div class="product-info">
+                            <h4 class="product-name">Kisan Sprayer Drone</h4>
+                            <p class="product-category">Technology</p>
+                            <div class="product-price">
+                                <span class="current-price" data-key="free_label">Free</span>
+                                <span class="original-price">₹50,000</span>
+                            </div>
+                            <div class="product-features">
+                                <span>HD Camera</span>
+                                <span>25min Flight</span>
+                                <span>GPS Enabled</span>
+                            </div>
+                            <button class="btn btn--primary btn--full-width" data-key="request_item">Request Item</button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-header">
+                            <div class="product-badge discount">60% OFF</div>
+                            <div class="product-rating">
+                                <span>⭐ 4.7</span>
+                            </div>
+                        </div>
+                        <div class="product-image">
+                            <div class="image-placeholder">💧</div>
+                        </div>
+                        <div class="product-info">
+                            <h4 class="product-name">Drip Irrigation Kit</h4>
+                            <p class="product-category">Irrigation</p>
+                            <div class="product-price">
+                                <span class="current-price">₹2,000</span>
+                                <span class="original-price">₹5,000</span>
+                            </div>
+                            <div class="product-features">
+                                <span>Water-saving</span>
+                                <span>Easy Install</span>
+                                <span>1 Acre Coverage</span>
+                            </div>
+                            <button class="btn btn--primary btn--full-width" data-key="request_item">Request Item</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhanced Chat Section with Voice Assistant -->
+        <section id="chat" class="section">
+            <div class="container">
+                <h2 data-key="chat_title">🎤 AI Voice Assistant - KrishiBot</h2>
+                
+                <!-- Voice Controls -->
+                <div class="voice-controls">
+                    <div class="voice-settings">
+                        <div class="voice-setting-group">
+                            <label data-key="voice_language">Voice Language:</label>
+                            <select id="voiceLanguageSelector" class="form-control voice-lang-select">
+                                <option value="en-IN">English (India)</option>
+                                <option value="hi-IN">हिन्दी (Hindi)</option>
+                                <option value="bn-IN">বাংলা (Bengali)</option>
+                                <option value="mr-IN">मराठी (Marathi)</option>
+                                <option value="te-IN">తెలుగు (Telugu)</option>
+                                <option value="ta-IN">தமிழ் (Tamil)</option>
+                                <option value="gu-IN">ગુજરાતી (Gujarati)</option>
+                                <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
+                                <option value="ml-IN">മലയാളം (Malayalam)</option>
+                                <option value="pa-IN">ਪੰਜਾਬੀ (Punjabi)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="voice-setting-group">
+                            <label data-key="speech_rate">Speech Rate:</label>
+                            <input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="1" class="voice-slider">
+                            <span id="rateValue">1.0x</span>
+                        </div>
+                        
+                        <div class="voice-setting-group">
+                            <label data-key="volume">Volume:</label>
+                            <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="1" class="voice-slider">
+                            <span id="volumeValue">100%</span>
+                        </div>
+                        
+                        <div class="voice-modes">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="continuousMode">
+                                <span class="slider"></span>
+                                <span data-key="continuous_listening">Continuous Listening</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Voice Interface -->
+                <div class="voice-interface">
+                    <div class="voice-status" id="voiceStatus">
+                        <div class="status-indicator" id="statusIndicator">
+                            <span class="status-icon">🎤</span>
+                            <span class="status-text" data-key="ready_to_help">Ready to help - Click mic to start</span>
+                        </div>
+                        
+                        <div class="voice-activity-indicator hidden" id="voiceActivity">
+                            <div class="wave-container">
+                                <div class="wave"></div>
+                                <div class="wave"></div>
+                                <div class="wave"></div>
+                                <div class="wave"></div>
+                                <div class="wave"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="main-voice-controls">
+                        <button class="voice-btn mic-btn" id="micBtn" data-key="start_listening">
+                            <span class="btn-icon">🎤</span>
+                            <span class="btn-text">Start Listening</span>
+                        </button>
+                        
+                        <button class="voice-btn stop-btn hidden" id="stopBtn" data-key="stop_listening">
+                            <span class="btn-icon">⏹️</span>
+                            <span class="btn-text">Stop</span>
+                        </button>
+                        
+                        <button class="voice-btn speak-btn" id="speakBtn" data-key="speak_response" disabled>
+                            <span class="btn-icon">🔊</span>
+                            <span class="btn-text">Speak Response</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Chat Container -->
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot-message">
+                            <div class="message-avatar">🤖</div>
+                            <div class="message-content">
+                                <p data-key="welcome_voice_message">Namaste! I am KrishiBot, your AI voice farming assistant. You can talk to me in your preferred language. How can I help you with farming today?</p>
+                                <span class="message-time">10:00 AM</span>
+                                <button class="speak-message-btn" data-message="Namaste! I am KrishiBot, your AI voice farming assistant. You can talk to me in your preferred language. How can I help you with farming today?">🔊</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-area">
+                        <div class="input-group">
+                            <input type="text" id="chatInput" class="form-control" placeholder="Type your farming question or use voice..." data-key-placeholder="type_or_voice_message">
+                            <button class="btn btn--outline" id="voiceInputBtn" title="Voice Input">🎤</button>
+                            <button class="btn btn--primary" id="sendMessage" data-key="send">Send</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Voice Commands Help -->
+                <div class="voice-commands-help">
+                    <h3 data-key="voice_commands_title">🎯 Try These Voice Commands:</h3>
+                    <div class="command-grid">
+                        <div class="command-card" data-command="check crop prices for rice in Maharashtra">
+                            <strong data-key="cmd_check_prices">"Check crop prices for [crop] in [location]"</strong>
+                        </div>
+                        <div class="command-card" data-command="diagnose disease in my wheat plant">
+                            <strong data-key="cmd_diagnose">"Diagnose disease in my [crop] plant"</strong>
+                        </div>
+                        <div class="command-card" data-command="what's the weather forecast for farming">
+                            <strong data-key="cmd_weather">"What's the weather forecast for farming?"</strong>
+                        </div>
+                        <div class="command-card" data-command="recommend fertilizer for sugarcane">
+                            <strong data-key="cmd_fertilizer">"Recommend fertilizer for [crop]"</strong>
+                        </div>
+                        <div class="command-card" data-command="show irrigation techniques">
+                            <strong data-key="cmd_irrigation">"Show me irrigation techniques"</strong>
+                        </div>
+                        <div class="command-card" data-command="calculate farming costs">
+                            <strong data-key="cmd_costs">"Calculate farming costs"</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Questions -->
+                <div class="quick-questions">
+                    <h3 data-key="quick_questions">💡 Quick Questions</h3>
+                    <div class="question-buttons">
+                        <button class="btn btn--secondary question-btn" data-question="How to detect plant diseases?" data-key="how_detect_disease">How to detect plant diseases?</button>
+                        <button class="btn btn--secondary question-btn" data-question="What's current rice price in my area?" data-key="current_rice_price">What's current rice price?</button>
+                        <button class="btn btn--secondary question-btn" data-question="Best irrigation method for my farm?" data-key="best_irrigation">Best irrigation method?</button>
+                        <button class="btn btn--secondary question-btn" data-question="Organic farming tips for beginners" data-key="organic_farming_tips">Organic farming tips?</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="container">
+                <h2 data-key="about_title">About pro.krishi</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p data-key="about_desc">pro.krishi is a free AI-powered agricultural platform with advanced voice assistant capabilities. Our mission is to make smart farming accessible to every farmer across India through intelligent voice interaction in their preferred language.</p>
+                        <h3 data-key="our_mission">Our Mission</h3>
+                        <p data-key="mission_desc">To revolutionize agriculture through free AI voice technology, expert guidance, and multilingual support, helping farmers increase productivity through natural conversation.</p>
+                        <h3 data-key="voice_features">Voice Features</h3>
+                        <p data-key="voice_features_desc">Our AI voice assistant understands major Indian languages, provides hands-free operation, and offers contextual agricultural advice through natural conversation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
