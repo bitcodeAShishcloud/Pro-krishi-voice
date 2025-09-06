@@ -975,12 +975,36 @@ class VoiceAssistant {
         console.log('Speech started');
         appState.isSpeaking = true;
         this.updateStatus('Speaking...', 'speaking');
+        
+        // Show stop speaking button
+        const stopSpeakingBtn = document.getElementById('stopSpeakingBtn');
+        if (stopSpeakingBtn) {
+          stopSpeakingBtn.classList.remove('hidden');
+        }
+        
+        // Show Kishan stop button if Kishan is speaking
+        const kishanStopBtn = document.getElementById('kishanStopBtn');
+        if (kishanStopBtn) {
+          kishanStopBtn.classList.remove('hidden');
+        }
       };
       
       utterance.onend = () => {
         console.log('Speech ended');
         appState.isSpeaking = false;
         this.updateStatus('Ready to help - Click mic to start');
+        
+        // Hide stop speaking button
+        const stopSpeakingBtn = document.getElementById('stopSpeakingBtn');
+        if (stopSpeakingBtn) {
+          stopSpeakingBtn.classList.add('hidden');
+        }
+        
+        // Hide Kishan stop button
+        const kishanStopBtn = document.getElementById('kishanStopBtn');
+        if (kishanStopBtn) {
+          kishanStopBtn.classList.add('hidden');
+        }
       };
       
       utterance.onerror = (event) => {
@@ -1052,6 +1076,18 @@ class VoiceAssistant {
         appState.isSpeaking = false;
         this.updateStatus('Speech stopped');
         console.log('Speech stopped');
+        
+        // Hide stop speaking button
+        const stopSpeakingBtn = document.getElementById('stopSpeakingBtn');
+        if (stopSpeakingBtn) {
+          stopSpeakingBtn.classList.add('hidden');
+        }
+        
+        // Hide Kishan stop button
+        const kishanStopBtn = document.getElementById('kishanStopBtn');
+        if (kishanStopBtn) {
+          kishanStopBtn.classList.add('hidden');
+        }
       }
     } catch (error) {
       console.error('Error stopping speech:', error);
@@ -1942,12 +1978,134 @@ let locationService;
 
 // Initialize application
 document.addEventListener('DOMContentLoaded', function() {
-  initializeApp();
-  setupKishanAvatarVoice();
-  initializeBackground();
-  setupInteractions();
-  initializeModernAvatar();
+  try {
+    console.log('🌾 pro.krishi - Initializing Smart Farming Assistant...');
+    
+    initializeApp();
+    setupKishanAvatarVoice();
+    initializeBackground();
+    setupInteractions();
+    initializeModernAvatar();
+    
+    // Initialize disease detection components
+    initializeDiseaseDetection();
+    
+    // Initialize soil analysis components
+    initializeSoilAnalysis();
+    
+    // Initialize weather service
+    initializeWeatherService();
+    
+    console.log('✅ pro.krishi - All components initialized successfully!');
+    
+    // Show welcome message
+    if (voiceAssistant) {
+      setTimeout(() => {
+        voiceAssistant.speak("Welcome to pro.krishi! Your smart farming assistant is ready to help you with crop diseases, soil analysis, weather forecasts, and farming advice. How can I assist you today?");
+      }, 2000);
+    }
+    
+  } catch (error) {
+    console.error('❌ pro.krishi - Initialization error:', error);
+    showErrorNotification('Failed to initialize some components. Please refresh the page.');
+  }
 });
+
+// Initialize Disease Detection
+function initializeDiseaseDetection() {
+  const uploadBox = document.getElementById('uploadBox');
+  const fileInput = document.getElementById('fileInput');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  
+  if (!uploadBox || !fileInput) {
+    console.warn('Disease detection elements not found');
+    return;
+  }
+  
+  // Ensure upload functionality is properly connected
+  if (uploadBtn) {
+    uploadBtn.addEventListener('click', () => fileInput.click());
+  }
+  
+  if (analyzeBtn) {
+    analyzeBtn.addEventListener('click', analyzeDisease);
+  }
+  
+  if (resetBtn) {
+    resetBtn.addEventListener('click', resetUpload);
+  }
+  
+  console.log('✅ Disease Detection initialized');
+}
+
+// Initialize Soil Analysis
+function initializeSoilAnalysis() {
+  // Ensure soil analysis data is available
+  if (!appData.soilAnalysisData) {
+    console.warn('Soil analysis data not loaded');
+    return;
+  }
+  
+  console.log('✅ Soil Analysis initialized with', appData.soilAnalysisData.length, 'soil conditions');
+}
+
+// Initialize Weather Service
+function initializeWeatherService() {
+  try {
+    weatherService = new WeatherService();
+    locationService = new LocationService();
+    
+    // Get initial weather data
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          weatherService.getWeatherData(lat, lon);
+        },
+        (error) => {
+          console.warn('Location access denied, using default location');
+          // Use default location (Delhi)
+          weatherService.getWeatherData(28.6139, 77.2090);
+        }
+      );
+    }
+    
+    console.log('✅ Weather Service initialized');
+  } catch (error) {
+    console.error('Weather Service initialization failed:', error);
+  }
+}
+
+// Error notification function
+function showErrorNotification(message) {
+  const notification = document.createElement('div');
+  notification.className = 'error-notification';
+  notification.innerHTML = `
+    <div style="
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 10000;
+      max-width: 300px;
+    ">
+      <strong>⚠️ Error:</strong> ${message}
+    </div>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.remove();
+  }, 5000);
+}
 
 // Initialize Modern Avatar Interactions
 function initializeModernAvatar() {
@@ -2210,6 +2368,22 @@ function kishan3DSpeak(text) {
     utterance.voice = preferredVoice;
   }
   
+  // Show stop button when speech starts
+  utterance.onstart = () => {
+    const kishanStopBtn = document.getElementById('kishanStopBtn');
+    if (kishanStopBtn) {
+      kishanStopBtn.classList.remove('hidden');
+    }
+  };
+  
+  // Hide stop button when speech ends
+  utterance.onend = () => {
+    const kishanStopBtn = document.getElementById('kishanStopBtn');
+    if (kishanStopBtn) {
+      kishanStopBtn.classList.add('hidden');
+    }
+  };
+  
   window.speechSynthesis.speak(utterance);
 }
 
@@ -2395,10 +2569,22 @@ function setupKishanAvatarVoice() {
     
     utterance.onstart = () => {
       updateKishanStatus('Speaking...', 'speaking');
+      
+      // Show stop button when speech starts
+      const kishanStopBtn = document.getElementById('kishanStopBtn');
+      if (kishanStopBtn) {
+        kishanStopBtn.classList.remove('hidden');
+      }
     };
     
     utterance.onend = () => {
       updateKishanStatus('Ready to help! Ask me anything.', 'normal');
+      
+      // Hide stop button when speech ends
+      const kishanStopBtn = document.getElementById('kishanStopBtn');
+      if (kishanStopBtn) {
+        kishanStopBtn.classList.add('hidden');
+      }
     };
     
     utterance.onerror = (event) => {
@@ -3878,6 +4064,258 @@ function logSoilActivity(soilId) {
   }
 }
 
+// Utility Functions for Enhanced Functionality
+
+// Reset upload function
+function resetUpload() {
+  const uploadPreview = document.getElementById('uploadPreview');
+  const uploadBox = document.getElementById('uploadBox');
+  const fileInput = document.getElementById('fileInput');
+  const analysisResults = document.getElementById('analysisResults');
+  
+  if (uploadPreview) uploadPreview.classList.add('hidden');
+  if (uploadBox) uploadBox.classList.remove('hidden');
+  if (fileInput) fileInput.value = '';
+  if (analysisResults) analysisResults.classList.add('hidden');
+  
+  console.log('Upload reset successfully');
+}
+
+// Enhanced error handling
+function handleError(error, context = 'Application') {
+  console.error(`${context} Error:`, error);
+  
+  const errorMsg = error.message || 'An unexpected error occurred';
+  showNotification(errorMsg, 'error');
+  
+  // Log to analytics if available
+  if (window.gtag) {
+    gtag('event', 'exception', {
+      description: `${context}: ${errorMsg}`,
+      fatal: false
+    });
+  }
+}
+
+// Enhanced notification system
+function showNotification(message, type = 'info', duration = 5000) {
+  const notification = document.createElement('div');
+  const typeColors = {
+    success: '#10b981',
+    error: '#ef4444',
+    warning: '#f59e0b',
+    info: '#3b82f6'
+  };
+  
+  const typeIcons = {
+    success: '✅',
+    error: '❌',
+    warning: '⚠️',
+    info: 'ℹ️'
+  };
+  
+  notification.className = `${type}-notification`;
+  notification.innerHTML = `
+    <div style="
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${typeColors[type]};
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 10000;
+      max-width: 350px;
+      animation: slideInRight 0.3s ease;
+      font-family: 'Segoe UI', sans-serif;
+    ">
+      <strong>${typeIcons[type]} ${type.charAt(0).toUpperCase() + type.slice(1)}:</strong> ${message}
+    </div>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideOutRight 0.3s ease';
+    setTimeout(() => notification.remove(), 300);
+  }, duration);
+}
+
+// Enhanced loading overlay
+function showLoadingOverlay(message = 'Processing...') {
+  const overlay = document.createElement('div');
+  overlay.id = 'loadingOverlay';
+  overlay.className = 'loading-overlay';
+  overlay.innerHTML = `
+    <div style="text-align: center; color: white;">
+      <div class="loading-spinner"></div>
+      <p style="margin-top: 20px; font-size: 1.1em;">${message}</p>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
+}
+
+function hideLoadingOverlay() {
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) {
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.remove(), 300);
+  }
+}
+
+// Enhanced file validation
+function validateImageFile(file) {
+  const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  
+  if (!validTypes.includes(file.type)) {
+    throw new Error('Please upload a valid image file (JPEG, PNG, or WebP)');
+  }
+  
+  if (file.size > maxSize) {
+    throw new Error('File size must be less than 10MB');
+  }
+  
+  return true;
+}
+
+// Enhanced speech synthesis with better error handling
+function speakText(text, options = {}) {
+  try {
+    if (!window.speechSynthesis) {
+      throw new Error('Speech synthesis not supported');
+    }
+    
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = options.rate || 0.9;
+    utterance.pitch = options.pitch || 1.0;
+    utterance.volume = options.volume || 1.0;
+    utterance.lang = options.lang || 'en-IN';
+    
+    utterance.onstart = () => {
+      console.log('Speech started');
+      updateVoiceStatus('speaking');
+    };
+    
+    utterance.onend = () => {
+      console.log('Speech ended');
+      updateVoiceStatus('idle');
+    };
+    
+    utterance.onerror = (error) => {
+      console.error('Speech synthesis error:', error);
+      updateVoiceStatus('idle');
+    };
+    
+    window.speechSynthesis.speak(utterance);
+    
+  } catch (error) {
+    handleError(error, 'Speech Synthesis');
+  }
+}
+
+// Update voice status indicator
+function updateVoiceStatus(status) {
+  const statusIndicator = document.querySelector('.avatar-status-indicator');
+  if (statusIndicator) {
+    statusIndicator.className = `avatar-status-indicator ${status}`;
+  }
+  
+  const statusText = document.querySelector('.status-text');
+  if (statusText) {
+    const statusTexts = {
+      idle: 'Ready to help',
+      listening: 'Listening...',
+      processing: 'Processing...',
+      speaking: 'Speaking...'
+    };
+    statusText.textContent = statusTexts[status] || 'Ready';
+  }
+}
+
+// Enhanced drag and drop functionality
+function setupDragAndDrop() {
+  const uploadBox = document.getElementById('uploadBox');
+  if (!uploadBox) return;
+  
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    uploadBox.addEventListener(eventName, preventDefaults, false);
+  });
+  
+  ['dragenter', 'dragover'].forEach(eventName => {
+    uploadBox.addEventListener(eventName, () => {
+      uploadBox.classList.add('dragover');
+    }, false);
+  });
+  
+  ['dragleave', 'drop'].forEach(eventName => {
+    uploadBox.addEventListener(eventName, () => {
+      uploadBox.classList.remove('dragover');
+    }, false);
+  });
+  
+  uploadBox.addEventListener('drop', handleDrop, false);
+}
+
+function preventDefaults(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+function handleDrop(e) {
+  const files = e.dataTransfer.files;
+  if (files.length > 0) {
+    try {
+      validateImageFile(files[0]);
+      displayImagePreview(files[0]);
+    } catch (error) {
+      handleError(error, 'File Upload');
+    }
+  }
+}
+
+// Performance monitoring
+function initializePerformanceMonitoring() {
+  if ('performance' in window) {
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const perfData = performance.getEntriesByType('navigation')[0];
+        console.log('🚀 Performance Metrics:', {
+          loadTime: Math.round(perfData.loadEventEnd - perfData.fetchStart),
+          domReady: Math.round(perfData.domContentLoadedEventEnd - perfData.fetchStart),
+          interactive: Math.round(perfData.domInteractive - perfData.fetchStart)
+        });
+      }, 1000);
+    });
+  }
+}
+
+// Initialize enhanced features
+function initializeEnhancedFeatures() {
+  setupDragAndDrop();
+  initializePerformanceMonitoring();
+  
+  // Add status indicator to avatar if not present
+  const avatarContainer = document.querySelector('.kishan-avatar');
+  if (avatarContainer && !avatarContainer.querySelector('.avatar-status-indicator')) {
+    const statusIndicator = document.createElement('div');
+    statusIndicator.className = 'avatar-status-indicator idle';
+    avatarContainer.appendChild(statusIndicator);
+  }
+  
+  console.log('✅ Enhanced features initialized');
+}
+
+// Call enhanced initialization
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(initializeEnhancedFeatures, 1000);
+});
+
 function displayDiseaseResults(disease, elements) {
   const { diseaseType, symptoms, treatment, confidenceScore, analysisResults } = elements;
   
@@ -4773,6 +5211,29 @@ function setupAdvancedVoiceControls() {
   if (stopBtn) {
     stopBtn.addEventListener('click', () => {
       voiceAIChatbot.stopListening();
+    });
+  }
+  
+  // Stop speaking button
+  const stopSpeakingBtn = document.getElementById('stopSpeakingBtn');
+  if (stopSpeakingBtn) {
+    stopSpeakingBtn.addEventListener('click', () => {
+      voiceAIChatbot.stopSpeaking();
+      
+      // Also stop any Kishan voice
+      const kishanStopBtn = document.getElementById('kishanStopBtn');
+      if (kishanStopBtn) {
+        kishanStopBtn.classList.add('hidden');
+      }
+    });
+  }
+  
+  // Kishan stop button
+  const kishanStopBtn = document.getElementById('kishanStopBtn');
+  if (kishanStopBtn) {
+    kishanStopBtn.addEventListener('click', () => {
+      voiceAIChatbot.stopSpeaking();
+      kishanStopBtn.classList.add('hidden');
     });
   }
   
